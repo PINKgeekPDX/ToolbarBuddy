@@ -1,0 +1,80 @@
+﻿Folder structure of: C:\Users\Shadow\Desktop\projects\ToolBarApp
+----------------------------------
+├── App.xaml
+├── App.xaml.cs
+├── config.json
+├── ToolbarApp.csproj
+├── ToolbarApp.sln
+├── Helpers
+│   └── ResizeModeToVisibilityConverter.cs
+├── Models
+│   ├── AppConfig.cs
+│   ├── ButtonConfig.cs
+│   ├── LoadPlugins.cs
+│   ├── Settings.cs
+│   ├── SingleToolbarConfig.cs
+│   └── ToolbarConfig.cs
+├── Resources
+│   ├── icon.ico
+│   ├── logo.png
+│   ├── logo.svg
+│   └── tray-icon.ico
+├── Services
+│   ├── ConfigurationService.cs
+│   ├── HotkeyService.cs
+│   ├── LoggingServices.cs
+│   ├── PluginService.cs
+│   ├── ScriptExecutor.cs
+│   ├── SettingsService.cs
+│   ├── SystemService.cs
+│   ├── TerminalServices.cs
+│   ├── ToolbarService.cs
+│   ├── UpdateService.cs
+│   ├── HostObjects
+│   │   ├── PluginServiceJs.cs
+│   │   ├── ScriptExecutorJs.cs
+│   │   └── SystemServiceJs.cs
+│   └── Interfaces
+│       └── IToolbarPlugin.cs
+├── Styles
+│   ├── ButtonStyles.xaml
+│   └── WindowStyles.xaml
+├── Tests
+│   ├── ConfigurationServiceTests.cs
+│   └── PluginServicesTests.cs
+├── themes
+│   ├── blue
+│   │   └── styles.css
+│   ├── cozy
+│   │   └── styles.css
+│   ├── dark
+│   │   └── styles.css
+│   ├── default
+│   │   └── styles.css
+│   ├── flashy
+│   │   └── styles.css
+│   └── light
+│       └── styles.css
+├── Views
+│   ├── ButtonConfigWindow.xaml
+│   ├── ButtonConfigWindow.xaml.cs
+│   ├── MainWindow.xaml
+│   ├── MainWindow.xaml.cs
+│   ├── SettingsWindow.xaml
+│   ├── SettingsWindow.xaml.cs
+│   ├── TerminalWindow.xaml
+│   ├── TerminalWindow.xaml.cs
+│   ├── ToolbarInstance.cs
+│   ├── ToolbarWindow.xaml
+│   └── ToolbarWindow.xaml.cs
+└── wwwroot
+    ├── index.html
+    ├── terminal.html
+    ├── css
+    │   ├── ButtonStyles.css
+    │   └── styles.css
+    ├── images
+    │   └── logo.png
+    └── js
+        ├── main.js
+        └── toolbar.js

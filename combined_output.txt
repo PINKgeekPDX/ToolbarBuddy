@@ -1,0 +1,4291 @@
+==================================================
+*** App.xaml *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\App.xaml
+==================================================
+
+<Application x:Class="ToolbarApp.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="Views/MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/ButtonStyles.xaml"/>
+                <ResourceDictionary Source="Styles/WindowStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
+==================================================
+*** App.xaml *** | END
+==================================================
+==================================================
+*** App.xaml.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\App.xaml.cs
+==================================================
+using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using ToolBarApp.Services;
+using ToolBarApp.Views;
+
+namespace ToolBarApp
+{
+    public partial class App : Application
+    {
+        private ServiceProvider _serviceProvider;
+
+        public App()
+        {
+            ServiceCollection services = new ServiceCollection();
+            ConfigureServices(services);
+            _serviceProvider = services.BuildServiceProvider();
+        }
+
+        /// <summary>
+        /// Configures services and registers them with the DI container.
+        /// </summary>
+        /// <param name="services">The service collection to configure.</param>
+        private void ConfigureServices(ServiceCollection services)
+        {
+            // Add logging
+            services.AddLogging(configure =>
+            {
+                configure.AddConsole();
+                configure.AddDebug();
+                // Add other logging providers if needed
+            });
+
+            // Register services
+            services.AddSingleton<ConfigurationService>();
+            services.AddSingleton<ScriptExecutor>();
+            services.AddSingleton<SystemService>();
+            services.AddSingleton<PluginService>();
+            services.AddSingleton<ToolbarService>();
+            services.AddSingleton<TerminalService>(); // Register TerminalService
+
+            // Register windows
+            services.AddTransient<MainWindow>();
+            services.AddTransient<TerminalWindow>();
+            services.AddTransient<ButtonConfigWindow>();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            var mainWindow = _serviceProvider.GetService<MainWindow>();
+            mainWindow.Show();
+            base.OnStartup(e);
+        }
+    }
+}
+
+==================================================
+*** App.xaml.cs *** | END
+==================================================
+==================================================
+*** ToolbarApp.csproj *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\ToolbarApp.csproj
+==================================================
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>latest</LangVersion>
+		<ComVisible>false</ComVisible>
+		<AssemblyTitle>ToolbarBuddy</AssemblyTitle>
+		<AssemblyDescription>A developers Toolbar Buddy</AssemblyDescription>
+		<AssemblyCompany>PINKgeekPDX</AssemblyCompany>
+		<AssemblyProduct>ToolbarBuddy</AssemblyProduct>
+		<Version>1.0.0</Version>
+		<FileVersion>1.0.0.0</FileVersion>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591;NU1701</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Core dependencies -->
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1901.177" />
+		<PackageReference Include="NHotkey.Wpf" Version="2.0.0" />
+		<PackageReference Include="Serilog" Version="3.0.1" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+		<PackageReference Include="Squirrel.Windows" Version="2.0.2" />
+		<PackageReference Include="SharpCompress" Version="0.17.1" />
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
+		<PackageReference Include="System.Text.Json" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+	</ItemGroup>
+
+</Project>
+
+==================================================
+*** ToolbarApp.csproj *** | END
+==================================================
+==================================================
+*** ToolbarApp.sln *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\ToolbarApp.sln
+==================================================
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolbarApp", "ToolbarApp.csproj", "{F9B7D073-AC9D-43DE-B7CA-E86B7167C899}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F9B7D073-AC9D-43DE-B7CA-E86B7167C899}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9B7D073-AC9D-43DE-B7CA-E86B7167C899}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9B7D073-AC9D-43DE-B7CA-E86B7167C899}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9B7D073-AC9D-43DE-B7CA-E86B7167C899}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = 57B06247-D46D-4B41-8AB6-B14993CE283A
+	EndGlobalSection
+EndGlobal
+
+==================================================
+*** ToolbarApp.sln *** | END
+==================================================
+==================================================
+*** ResizeModeToVisibilityConverter.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Helpers\ResizeModeToVisibilityConverter.cs
+==================================================
+using System;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Data;
+
+namespace ToolBarApp.Helpers
+{
+    public class ResizeModeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is ResizeMode mode)
+            {
+                return mode == ResizeMode.NoResize ? Visibility.Collapsed : Visibility.Visible;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
+
+==================================================
+*** ResizeModeToVisibilityConverter.cs *** | END
+==================================================
+==================================================
+*** AppConfig.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Models\AppConfig.cs
+==================================================
+using System.Text.Json.Serialization;
+
+public class AppConfig
+{
+    [JsonPropertyName("isAlwaysOnTop")]
+    public bool IsAlwaysOnTop { get; init; }
+
+    [JsonPropertyName("areAlertsEnabled")]
+    public bool AreAlertsEnabled { get; init; }
+
+    [JsonPropertyName("theme")]
+    public string Theme { get; init; } = "default";
+
+    [JsonPropertyName("toolbarConfig")]
+    public ToolbarConfig ToolbarConfig { get; init; } = new();
+
+    [JsonPropertyName("pluginsEnabled")]
+    public bool PluginsEnabled { get; init; }
+
+    [JsonPropertyName("pluginDirectory")]
+    public string PluginDirectory { get; init; } = "plugins";
+
+    [JsonPropertyName("logLevel")]
+    public string LogLevel { get; init; } = "Information";
+
+    [JsonPropertyName("autoUpdate")]
+    public bool AutoUpdate { get; init; } = true;
+
+    [JsonPropertyName("hotkeys")]
+    public Dictionary<string, string> Hotkeys { get; init; } = new();
+
+    [JsonPropertyName("windowPosition")]
+    public WindowPosition WindowPosition { get; init; } = new();
+
+    public AppConfig()
+    {
+        IsAlwaysOnTop = false;
+        AreAlertsEnabled = true;
+        ToolbarConfig = new ToolbarConfig();
+        Hotkeys = new Dictionary<string, string>
+        {
+            { "ToggleToolbar", "Alt+T" },
+            { "ShowSettings", "Alt+S" },
+            { "ShowTerminal", "Alt+`" }
+        };
+    }
+}
+
+
+==================================================
+*** AppConfig.cs *** | END
+==================================================
+==================================================
+*** ButtonConfig.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Models\ButtonConfig.cs
+==================================================
+// Models/ButtonConfig.cs
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
+public class ButtonConfig
+{
+    [JsonPropertyName("id")]
+    public string Id { get; init; } = string.Empty;
+
+    [JsonPropertyName("label")]
+    public string Label { get; init; } = string.Empty;
+
+    [JsonPropertyName("type")]
+    public string Type { get; init; } = string.Empty;
+
+    [JsonPropertyName("config")]
+    public Dictionary<string, object> Config { get; init; } = new();
+
+    [JsonPropertyName("tooltip")]
+    public string Tooltip { get; init; } = string.Empty;
+}
+==================================================
+*** ButtonConfig.cs *** | END
+==================================================
+==================================================
+*** Settings.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Models\Settings.cs
+==================================================
+namespace ToolBarApp.Models
+{
+    public class Settings
+    {
+        public bool IsToolbarPinned { get; init; } = false;
+        public bool IsAlwaysOnTop { get; init; } = false;
+        public string TerminalPosition { get; init; } = "Top";
+        public ToolbarConfig ToolbarConfig { get; init; } = new();
+        public TerminalSettings TerminalSettings { get; init; } = new();
+        public string SelectedTheme { get; init; } = "Default";
+    }
+    public class TerminalSettings
+    {
+        public bool ShowInfo { get; init; } = true;
+        public bool ShowScript { get; init; } = true;
+        public bool ShowWarning { get; init; } = true;
+        public bool ShowError { get; init; } = true;
+    }
+}
+
+==================================================
+*** Settings.cs *** | END
+==================================================
+==================================================
+*** SingleToolbarConfig.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Models\SingleToolbarConfig.cs
+==================================================
+using System.Text.Json.Serialization;
+
+namespace ToolBarApp.Models
+{
+    public class SingleToolbarConfig
+    {
+        public bool IsAlwaysOnTop { get; init; }
+        public bool IsPinned { get; init; }
+
+        [JsonPropertyName("id")]
+        public string Id { get; init; } = string.Empty;
+
+        [JsonPropertyName("position")]
+        public string Position { get; init; } = "Top";
+
+        [JsonPropertyName("isVisible")]
+        public bool IsVisible { get; init; } = true;
+
+        [JsonPropertyName("buttons")]
+        public List<ButtonConfig> Buttons { get; init; } = new();
+
+        [JsonPropertyName("theme")]
+        public string Theme { get; init; } = "default";
+    }
+}
+==================================================
+*** SingleToolbarConfig.cs *** | END
+==================================================
+==================================================
+*** ToolbarConfig.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Models\ToolbarConfig.cs
+==================================================
+using System.Text.Json.Serialization;
+
+namespace ToolBarApp.Models
+{
+    public class ToolbarConfig
+    {
+        [JsonPropertyName("toolbars")]
+        public List<SingleToolbarConfig> Toolbars { get; init; } = new();
+
+        [JsonPropertyName("buttons")]
+        public List<ButtonConfig> Buttons { get; init; } = new();
+
+        [JsonPropertyName("globalSettings")]
+        public Dictionary<string, object> GlobalSettings { get; init; } = new();
+
+        [JsonPropertyName("version")]
+        public string Version { get; init; } = "1.0";
+    }
+}
+
+==================================================
+*** ToolbarConfig.cs *** | END
+==================================================
+==================================================
+*** ConfigurationService.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\ConfigurationService.cs
+==================================================
+using System;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
+using ToolbarApp.Models;
+using Microsoft.Extensions.Logging;
+
+namespace ToolBarApp.Services
+{
+    /// <summary>
+    /// Service responsible for loading and saving toolbar configurations.
+    /// </summary>
+    public class ConfigurationService
+    {
+        private readonly string _configFilePath;
+        private required string _pluginDirectory;
+        private required string _testConfigFilePath;
+
+        private readonly ILogger<ConfigurationService> _logger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConfigurationService"/> class with a specified configuration file path.
+        /// </summary>
+        /// <param name="configFilePath">The file path to the configuration file.</param>
+        /// <param name="logger">The logger instance for logging.</param>
+        public ConfigurationService(string configFilePath, ILogger<ConfigurationService> logger)
+        {
+            if (string.IsNullOrWhiteSpace(configFilePath))
+            {
+                throw new ArgumentException("Configuration file path cannot be null or whitespace.", nameof(configFilePath));
+            }
+
+            _configFilePath = configFilePath;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConfigurationService"/> class with the default configuration file path.
+        /// </summary>
+        /// <param name="logger">The logger instance for logging.</param>
+        public ConfigurationService(ILogger<ConfigurationService> logger)
+            : this(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "toolbar_config.json"), logger)
+        {
+        }
+
+        /// <summary>
+        /// Loads the toolbar configuration asynchronously.
+        /// </summary>
+        /// <returns>A <see cref="ToolbarConfig"/> object containing all toolbar configurations.</returns>
+        public async Task<ToolbarConfig> LoadConfigurationAsync()
+        {
+            try
+            {
+                if (File.Exists(_configFilePath))
+                {
+                    string json = await File.ReadAllTextAsync(_configFilePath);
+                    var config = JsonSerializer.Deserialize<ToolbarConfig>(json, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                        ReadCommentHandling = JsonCommentHandling.Skip,
+                        AllowTrailingCommas = true
+                    });
+
+                    if (config != null)
+                    {
+                        _logger.LogInformation("Configuration loaded successfully from {ConfigFilePath}.", _configFilePath);
+                        return config;
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Configuration file {ConfigFilePath} is empty or invalid. Loading default configuration.", _configFilePath);
+                    }
+                }
+                else
+                {
+                    _logger.LogWarning("Configuration file {ConfigFilePath} does not exist. Loading default configuration.", _configFilePath);
+                }
+            }
+            catch (JsonException jsonEx)
+            {
+                _logger.LogError(jsonEx, "JSON deserialization error while loading configuration from {ConfigFilePath}. Loading default configuration.", _configFilePath);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while loading configuration from {ConfigFilePath}. Loading default configuration.", _configFilePath);
+            }
+
+            // Return default configuration if file doesn't exist or deserialization fails
+            return new ToolbarConfig();
+        }
+
+        /// <summary>
+        /// Saves the toolbar configuration asynchronously.
+        /// </summary>
+        /// <param name="config">The <see cref="ToolbarConfig"/> object to save.</param>
+        public async Task SaveConfigurationAsync(ToolbarConfig config)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config), "Configuration to save cannot be null.");
+            }
+
+            try
+            {
+                string json = JsonSerializer.Serialize(config, new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                });
+
+                // Ensure the directory exists
+                string directory = Path.GetDirectoryName(_configFilePath);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                await File.WriteAllTextAsync(_configFilePath, json);
+                _logger.LogInformation("Configuration saved successfully to {ConfigFilePath}.", _configFilePath);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error saving configuration to {ConfigFilePath}.", _configFilePath);
+            }
+        }
+    }
+}
+
+==================================================
+*** ConfigurationService.cs *** | END
+==================================================
+==================================================
+*** HotkeyService.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\HotkeyService.cs
+==================================================
+using System;
+using System.Windows.Input;
+using NHotkey;
+using NHotkey.Wpf;
+using Microsoft.Extensions.Logging;
+using ToolbarApp.Views;
+
+namespace ToolBarApp.Services
+{
+    /// <summary>
+    /// Service responsible for registering and handling global hotkeys.
+    /// </summary>
+    public class HotkeyService
+    {
+        private readonly ILogger<HotkeyService> _logger;
+        private readonly MainWindow _mainWindow;
+
+        public HotkeyService(MainWindow mainWindow, ILogger<HotkeyService> logger)
+        {
+            _mainWindow = mainWindow;
+            _logger = logger;
+            RegisterHotkeys();
+        }
+
+        /// <summary>
+        /// Registers all necessary global hotkeys.
+        /// </summary>
+        private void RegisterHotkeys()
+        {
+            try
+            {
+                // Ctrl + F1 to toggle toolbar visibility
+                HotkeyManager.Current.AddOrReplace("ToggleToolbar", Key.F1, ModifierKeys.Control, OnToggleToolbar);
+
+                // Ctrl + Shift + T to open Terminal
+                HotkeyManager.Current.AddOrReplace("OpenTerminal", Key.T, ModifierKeys.Control | ModifierKeys.Shift, OnOpenTerminal);
+
+                // Ctrl + Shift + S to open Settings
+                HotkeyManager.Current.AddOrReplace("OpenSettings", Key.S, ModifierKeys.Control | ModifierKeys.Shift, OnOpenSettings);
+
+                _logger.LogInformation("Global hotkeys registered successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to register global hotkeys.");
+            }
+        }
+
+        /// <summary>
+        /// Handler for the ToggleToolbar hotkey.
+        /// Toggles the visibility of the main toolbar.
+        /// </summary>
+        private void OnToggleToolbar(object sender, HotkeyEventArgs e)
+        {
+            _mainWindow.ToggleToolbarVisibility();
+            _logger.LogInformation("ToggleToolbar hotkey pressed.");
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// Handler for the OpenTerminal hotkey.
+        /// Opens or toggles the terminal window.
+        /// </summary>
+        private void OnOpenTerminal(object sender, HotkeyEventArgs e)
+        {
+            _mainWindow.OpenTerminal();
+            _logger.LogInformation("OpenTerminal hotkey pressed.");
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// Handler for the OpenSettings hotkey.
+        /// Opens the settings window.
+        /// </summary>
+        private void OnOpenSettings(object sender, HotkeyEventArgs e)
+        {
+            _mainWindow.OpenSettingsDialog();
+            _logger.LogInformation("OpenSettings hotkey pressed.");
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// Unregisters all hotkeys. Should be called on application exit.
+        /// </summary>
+        public void UnregisterHotkeys()
+        {
+            HotkeyManager.Current.Remove("ToggleToolbar");
+            HotkeyManager.Current.Remove("OpenTerminal");
+            HotkeyManager.Current.Remove("OpenSettings");
+            _logger.LogInformation("Global hotkeys unregistered.");
+        }
+    }
+}
+
+==================================================
+*** HotkeyService.cs *** | END
+==================================================
+==================================================
+*** LoggingServices.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\LoggingServices.cs
+==================================================
+using Microsoft.Extensions.Logging;
+
+namespace ToolBarApp.Services
+{
+    /// <summary>
+    /// Service responsible for logging application events and errors.
+    /// </summary>
+    public class LoggingService
+    {
+        private readonly ILogger<LoggingService> _logger;
+
+        public LoggingService(ILogger<LoggingService> logger)
+        {
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Logs an informational message.
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        public void LogInfo(string message)
+        {
+            _logger.LogInformation(message);
+        }
+
+        /// <summary>
+        /// Logs a warning message.
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        public void LogWarning(string message)
+        {
+            _logger.LogWarning(message);
+        }
+
+        /// <summary>
+        /// Logs an error message with an exception.
+        /// </summary>
+        /// <param name="message">The error message.</param>
+        /// <param name="ex">The exception associated with the error.</param>
+        public void LogError(string message, Exception ex)
+        {
+            _logger.LogError(ex, message);
+        }
+
+        /// <summary>
+        /// General log method with specified log level.
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        /// <param name="level">The severity level of the log.</param>
+        public void Log(string message, LogLevel level = LogLevel.Information)
+        {
+            switch (level)
+            {
+                case LogLevel.Trace:
+                    _logger.LogTrace(message);
+                    break;
+                case LogLevel.Debug:
+                    _logger.LogDebug(message);
+                    break;
+                case LogLevel.Information:
+                    _logger.LogInformation(message);
+                    break;
+                case LogLevel.Warning:
+                    _logger.LogWarning(message);
+                    break;
+                case LogLevel.Error:
+                    _logger.LogError(message);
+                    break;
+                case LogLevel.Critical:
+                    _logger.LogCritical(message);
+                    break;
+                default:
+                    _logger.LogInformation(message);
+                    break;
+            }
+        }
+    }
+}
+
+==================================================
+*** LoggingServices.cs *** | END
+==================================================
+==================================================
+*** PluginLoader.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\PluginLoader.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using Microsoft.Extensions.Logging;
+using ToolBarApp.Services.Interfaces;
+
+namespace ToolBarApp.Services
+{
+    public class PluginLoader
+    {
+        private readonly string _pluginDirectory;
+        private readonly ILogger<PluginLoader> _logger;
+        private readonly List<Assembly> _loadedPlugins;
+
+        public PluginLoader(ILogger<PluginLoader> logger, string pluginDirectory)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _pluginDirectory = pluginDirectory ?? throw new ArgumentNullException(nameof(pluginDirectory));
+            _loadedPlugins = new List<Assembly>();
+        }
+
+        public IEnumerable<Assembly> LoadedPlugins => _loadedPlugins.AsReadOnly();
+
+        public void LoadPlugins()
+        {
+            try
+            {
+                if (!Directory.Exists(_pluginDirectory))
+                {
+                    _logger.LogInformation($"Creating plugin directory: {_pluginDirectory}");
+                    Directory.CreateDirectory(_pluginDirectory);
+                }
+
+                var dllFiles = Directory.GetFiles(_pluginDirectory, "*.dll");
+                if (!dllFiles.Any())
+                {
+                    _logger.LogInformation("No plugins found in the plugin directory.");
+                    return;
+                }
+
+                foreach (var dll in dllFiles)
+                {
+                    LoadPlugin(dll);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to load plugins from directory: {PluginDirectory}", _pluginDirectory);
+                throw new PluginLoadException("Failed to load plugins.", ex);
+            }
+        }
+
+        private void LoadPlugin(string dllPath)
+        {
+            try
+            {
+                var assembly = Assembly.LoadFrom(dllPath);
+                _loadedPlugins.Add(assembly);
+                _logger.LogInformation("Loaded plugin: {PluginName}", Path.GetFileName(dllPath));
+
+                // Initialize plugins
+                var pluginTypes = assembly.GetTypes()
+                    .Where(t => typeof(IToolbarPlugin).IsAssignableFrom(t) 
+                           && !t.IsInterface 
+                           && !t.IsAbstract);
+
+                foreach (var type in pluginTypes)
+                {
+                    try
+                    {
+                        var pluginInstance = (IToolbarPlugin)Activator.CreateInstance(type);
+                        pluginInstance.Initialize();
+                        _logger.LogInformation("Initialized plugin: {PluginName}", pluginInstance.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Failed to initialize plugin type: {PluginType}", type.FullName);
+                    }
+                }
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                _logger.LogError(ex, "Failed to load plugin types from: {PluginPath}. Loader exceptions: {LoaderExceptions}", 
+                    dllPath, 
+                    string.Join(Environment.NewLine, ex.LoaderExceptions.Select(e => e.Message)));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to load plugin: {PluginPath}", dllPath);
+            }
+        }
+    }
+
+    public class PluginLoadException : Exception
+    {
+        public PluginLoadException(string message, Exception innerException) 
+            : base(message, innerException)
+        {
+        }
+    }
+}
+
+==================================================
+*** PluginLoader.cs *** | END
+==================================================
+==================================================
+*** PluginService.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\PluginService.cs
+==================================================
+// PluginService.cs
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using ToolBarApp.Models;
+
+namespace ToolBarApp.Services
+{
+    /// <summary>
+    /// Service responsible for managing plugins.
+    /// </summary>
+    public class PluginService
+    {        private readonly ILogger<PluginService> _logger;
+        private readonly List<IToolbarPlugin> _loadedPlugins;
+        private required string _pluginDirectory;
+        private required string _testConfigFilePath;
+
+
+        public PluginService(ILogger<PluginService> logger)
+        {
+            _logger = logger;
+            _pluginsDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+            _loadedPlugins = new List<IToolbarPlugin>();
+
+            if (!Directory.Exists(_pluginsDirectory))
+            {
+                Directory.CreateDirectory(_pluginsDirectory);
+                _logger.LogInformation($"Created plugins directory at {_pluginsDirectory}.");
+            }
+        }
+
+        /// <summary>
+        /// Loads all plugins from the plugins directory.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task LoadPluginsAsync()
+        {
+            var pluginFiles = Directory.GetFiles(_pluginsDirectory, "*.dll");
+
+            foreach (var file in pluginFiles)
+            {
+                try
+                {
+                    var assembly = Assembly.LoadFrom(file);
+                    var pluginTypes = assembly.GetTypes().Where(t => typeof(IToolbarPlugin).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+
+                    foreach (var type in pluginTypes)
+                    {
+                        var plugin = (IToolbarPlugin)Activator.CreateInstance(type);
+                        _loadedPlugins.Add(plugin);
+                        _logger.LogInformation($"Loaded plugin: {plugin.Name}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error loading plugin from file: {file}");
+                }
+            }
+
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Executes a plugin by its ID.
+        /// </summary>
+        /// <param name="pluginId">The ID of the plugin to execute.</param>
+        /// <returns>The result of the plugin execution.</returns>
+        public async Task<string> ExecutePluginAsync(string pluginId)
+        {
+            var plugin = _loadedPlugins.FirstOrDefault(p => p.Id == pluginId);
+            if (plugin != null)
+            {
+                try
+                {
+                    string result = await plugin.ExecuteAsync();
+                    _logger.LogInformation($"Executed plugin: {plugin.Name}");
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error executing plugin: {plugin.Name}");
+                    return $"Error executing plugin: {ex.Message}";
+                }
+            }
+            else
+            {
+                _logger.LogWarning($"Plugin with ID '{pluginId}' not found.");
+                return $"Plugin with ID '{pluginId}' not found.";
+            }
+        }
+
+        /// <summary>
+        /// Retrieves all loaded plugins.
+        /// </summary>
+        /// <returns>A list of loaded plugins.</returns>
+        public List<IToolbarPlugin> GetLoadedPlugins()
+        {
+            return _loadedPlugins;
+        }
+
+        /// <summary>
+        /// Loads a plugin from a specified path.
+        /// </summary>
+        /// <param name="pluginPath">The file path of the plugin DLL.</param>
+        /// <returns>An instance of the loaded plugin.</returns>
+        public IToolbarPlugin LoadPlugin(string pluginPath)
+        {
+            try
+            {
+                var assembly = Assembly.LoadFrom(pluginPath);
+                var pluginType = assembly.GetTypes().FirstOrDefault(t => typeof(IToolbarPlugin).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+                if (pluginType != null)
+                {
+                    var plugin = (IToolbarPlugin)Activator.CreateInstance(pluginType);
+                    _loadedPlugins.Add(plugin);
+                    _logger.LogInformation($"Loaded plugin: {plugin.Name}");
+                    return plugin;
+                }
+                else
+                {
+                    _logger.LogWarning($"No valid plugin found in assembly: {pluginPath}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error loading plugin from path: {pluginPath}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Adds a plugin to the loaded plugins list.
+        /// </summary>
+        /// <param name="plugin">The plugin to add.</param>
+        public void AddPlugin(IToolbarPlugin plugin)
+        {
+            if (plugin == null) throw new ArgumentNullException(nameof(plugin));
+            _loadedPlugins.Add(plugin);
+            _logger.LogInformation($"Added plugin: {plugin.Name}");
+        }
+
+        /// <summary>
+        /// Removes a plugin by its name.
+        /// </summary>
+        /// <param name="pluginName">The name of the plugin to remove.</param>
+        public void RemovePlugin(string pluginName)
+        {
+            var plugin = _loadedPlugins.FirstOrDefault(p => p.Name.Equals(pluginName, StringComparison.OrdinalIgnoreCase));
+            if (plugin != null)
+            {
+                _loadedPlugins.Remove(plugin);
+                _logger.LogInformation($"Removed plugin: {plugin.Name}");
+            }
+            else
+            {
+                _logger.LogWarning($"Plugin '{pluginName}' not found.");
+            }
+        }
+
+        /// <summary>
+        /// Saves the current plugin list. (Implementation depends on how plugins are managed)
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task SavePluginsAsync()
+        {
+            // Implement plugin persistence logic if necessary
+            await Task.CompletedTask;
+        }
+    }
+}
+
+==================================================
+*** PluginService.cs *** | END
+==================================================
+==================================================
+*** ScriptExecutor.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\ScriptExecutor.cs
+==================================================
+using System;
+using System.Diagnostics;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+
+namespace ToolBarApp.Services
+{
+    public class ScriptExecutor
+    {
+        private readonly ILogger<ScriptExecutor> _logger;
+        private const int ExecutionTimeoutSeconds = 30;
+
+        public ScriptExecutor(ILogger<ScriptExecutor> logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        /// <summary>
+        /// Executes a script asynchronously and returns the output.
+        /// </summary>
+        /// <param name="scriptType">Type of the script: "PowerShell", "Cmd", "Python".</param>
+        /// <param name="command">The script command or path.</param>
+        /// <param name="adminRights">Whether to execute with admin rights.</param>
+        /// <returns>The output of the script execution.</returns>
+        public async Task<string> ExecuteScriptAsync(string scriptType, string command, bool adminRights)
+        {
+            try
+            {
+                _logger.LogInformation("Executing {ScriptType} script: {Command}", scriptType, command);
+
+                var startInfo = new ProcessStartInfo
+                {
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                ConfigureProcessStartInfo(startInfo, scriptType, command);
+
+                if (adminRights)
+                {
+                    startInfo.Verb = "runas";
+                    startInfo.UseShellExecute = true;
+                    startInfo.RedirectStandardOutput = false;
+                    startInfo.RedirectStandardError = false;
+                }
+
+                using var process = new Process { StartInfo = startInfo };
+                var output = new StringBuilder();
+                var error = new StringBuilder();
+
+                if (!adminRights)
+                {
+                    process.OutputDataReceived += (sender, e) =>
+                    {
+                        if (e.Data != null)
+                        {
+                            output.AppendLine(e.Data);
+                        }
+                    };
+
+                    process.ErrorDataReceived += (sender, e) =>
+                    {
+                        if (e.Data != null)
+                        {
+                            error.AppendLine(e.Data);
+                        }
+                    };
+                }
+
+                process.Start();
+
+                if (!adminRights)
+                {
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+                }
+
+                bool processExited = await WaitForProcessAsync(process);
+
+                if (!processExited)
+                {
+                    try
+                    {
+                        process.Kill();
+                        return "Process execution timed out and was terminated.";
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error terminating process");
+                        return "Process execution timed out but could not be terminated.";
+                    }
+                }
+
+                string result = adminRights ? "Command executed with admin rights" : output.ToString();
+                if (error.Length > 0)
+                {
+                    result = string.Concat(result, Environment.NewLine, "Errors:", Environment.NewLine, error.ToString());
+                }
+
+                return result.Trim();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error executing script: {ScriptType} - {Command}", scriptType, command);
+                throw;
+            }
+        }
+
+        private void ConfigureProcessStartInfo(ProcessStartInfo startInfo, string scriptType, string command)
+        {
+            switch (scriptType.ToLower())
+            {
+                case "powershell":
+                    startInfo.FileName = "powershell.exe";
+                    startInfo.Arguments = string.Format("-NoProfile -ExecutionPolicy Bypass -Command \"{0}\"", command);
+                    break;
+
+                case "cmd":
+                    startInfo.FileName = "cmd.exe";
+                    startInfo.Arguments = string.Format("/c {0}", command);
+                    break;
+
+                case "python":
+                    startInfo.FileName = "python.exe";
+                    startInfo.Arguments = string.Format("-c \"{0}\"", command);
+                    break;
+
+                default:
+                    throw new ArgumentException(string.Format("Unsupported script type: {0}", scriptType));
+            }
+        }
+
+        private async Task<bool> WaitForProcessAsync(Process process)
+        {
+            var processCompletionSource = new TaskCompletionSource<bool>();
+
+            process.Exited += (sender, args) =>
+            {
+                processCompletionSource.TrySetResult(true);
+            };
+
+            process.EnableRaisingEvents = true;
+
+            if (process.HasExited)
+            {
+                return true;
+            }
+
+            using var cancellationToken = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(ExecutionTimeoutSeconds));
+            cancellationToken.Token.Register(() => processCompletionSource.TrySetResult(false));
+
+            return await processCompletionSource.Task;
+        }
+    }
+}
+
+==================================================
+*** ScriptExecutor.cs *** | END
+==================================================
+==================================================
+*** SettingsService.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\SettingsService.cs
+==================================================
+using System;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
+using ToolbarApp.Models;
+using Microsoft.Extensions.Logging;
+
+namespace ToolBarApp.Services
+{
+    /// <summary>
+    /// Service responsible for loading and saving user and application settings.
+    /// </summary>
+    public class SettingsService
+    {
+        private readonly string _settingsFilePath;
+        private readonly ILogger<SettingsService> _logger;
+
+        public SettingsService(ILogger<SettingsService> logger)
+        {
+            _logger = logger;
+            _settingsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "settings.json");
+        }
+
+        /// <summary>
+        /// Loads the application settings asynchronously.
+        /// </summary>
+        /// <returns>A Settings object containing all user and application settings.</returns>
+        public async Task<Settings> LoadSettingsAsync()
+        {
+            try
+            {
+                if (File.Exists(_settingsFilePath))
+                {
+                    string json = await File.ReadAllTextAsync(_settingsFilePath);
+                    var settings = JsonSerializer.Deserialize<Settings>(json);
+                    if (settings != null)
+                    {
+                        return settings;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to load settings.");
+            }
+            // Return default settings if file doesn't exist or deserialization fails
+            return new Settings();
+        }
+
+        /// <summary>
+        /// Saves the application settings asynchronously.
+        /// </summary>
+        /// <param name="settings">The Settings object to save.</param>
+        public async Task SaveSettingsAsync(Settings settings)
+        {
+            try
+            {
+                string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
+                await File.WriteAllTextAsync(_settingsFilePath, json);
+                _logger.LogInformation("Settings saved successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to save settings.");
+            }
+        }
+    }
+}
+
+==================================================
+*** SettingsService.cs *** | END
+==================================================
+==================================================
+*** SystemService.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\SystemService.cs
+==================================================
+// SystemService.cs
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+
+namespace ToolBarApp.Services
+{
+    /// <summary>
+    /// Service responsible for system-level operations like launching applications and opening URLs.
+    /// </summary>
+    public class SystemService
+    {
+        private readonly ILogger<SystemService> _logger;
+
+        public SystemService(ILogger<SystemService> logger)
+        {
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Executes an external application asynchronously.
+        /// </summary>
+        /// <param name="path">Path to the executable.</param>
+        /// <param name="arguments">Arguments for the executable.</param>
+        /// <param name="adminRights">Whether to run with admin rights.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task ExecuteApplicationAsync(string path, string arguments, bool adminRights)
+        {
+            try
+            {
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = path,
+                    Arguments = arguments,
+                    UseShellExecute = true
+                };
+
+                if (adminRights)
+                {
+                    processStartInfo.Verb = "runas";
+                }
+
+                using var process = Process.Start(processStartInfo);
+                if (process != null)
+                {
+                    await process.WaitForExitAsync();
+                    _logger.LogInformation($"Executed application: {path} with arguments: {arguments}");
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Failed to start application: {path}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error executing application: {path}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Opens a URL in the default web browser.
+        /// </summary>
+        /// <param name="url">The URL to open.</param>
+        public void OpenUrl(string url)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+                _logger.LogInformation($"Opened URL: {url}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error opening URL: {url}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Opens a URL asynchronously in the default web browser.
+        /// </summary>
+        /// <param name="url">The URL to open.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task OpenUrlAsync(string url)
+        {
+            await Task.Run(() => OpenUrl(url));
+        }
+    }
+}
+
+==================================================
+*** SystemService.cs *** | END
+==================================================
+==================================================
+*** TerminalServices.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\TerminalServices.cs
+==================================================
+// Services/TerminalService.cs
+using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using ToolBarApp.Views;
+
+namespace ToolBarApp.Services
+{
+    /// <summary>
+    /// Service responsible for managing terminal logs and communication.
+    /// </summary>
+    public class TerminalService
+    {
+        private readonly ILogger<TerminalService> _logger;
+        private TerminalWindow _terminalWindow;
+
+        public TerminalService(ILogger<TerminalService> logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        /// <summary>
+        /// Initializes and shows the TerminalWindow.
+        /// </summary>
+        public void Initialize()
+        {
+            if (_terminalWindow == null)
+            {
+                _terminalWindow = new TerminalWindow();
+                _terminalWindow.Show();
+                _logger.LogInformation("Terminal window initialized and displayed.");
+            }
+            else
+            {
+                _terminalWindow.Activate();
+                _logger.LogInformation("Terminal window activated.");
+            }
+        }
+
+        /// <summary>
+        /// Sends a log message to the TerminalWindow.
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        /// <param name="level">The log level.</param>
+        public async Task LogAsync(string message, LogLevel level = LogLevel.Information)
+        {
+            if (_terminalWindow == null)
+            {
+                _logger.LogWarning("TerminalWindow is not initialized.");
+                return;
+            }
+
+            string logMessage = $"{DateTime.Now:HH:mm:ss} [{level}] {message}";
+            await _terminalWindow.AppendMessageAsync(logMessage, level);
+        }
+    }
+}
+
+==================================================
+*** TerminalServices.cs *** | END
+==================================================
+==================================================
+*** ToolbarService.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\ToolbarService.cs
+==================================================
+// ToolbarService.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using ToolBarApp.Models;
+using Microsoft.Extensions.Logging;
+
+namespace ToolBarApp.Services
+{
+    /// <summary>
+    /// Service responsible for managing toolbar operations.
+    /// </summary>
+    public class ToolbarService
+    {
+        private readonly ConfigurationService _configService;
+        private readonly ILogger<ToolbarService> _logger;
+
+        public ToolbarService(ConfigurationService configService, ILogger<ToolbarService> logger)
+        {
+            _configService = configService ?? throw new ArgumentNullException(nameof(configService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        /// <summary>
+        /// Adds a new button to the toolbar and updates the configuration.
+        /// </summary>
+        /// <param name="button">The button configuration to add.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddButtonAsync(ButtonConfig button)
+        {
+            if (button == null) throw new ArgumentNullException(nameof(button));
+
+            var config = await _configService.LoadConfigurationAsync();
+            if (config.Toolbars == null || !config.Toolbars.Any())
+            {
+                // Initialize with a default toolbar if none exist
+                config.Toolbars = new List<SingleToolbarConfig>
+                {
+                    new SingleToolbarConfig
+                    {
+                        Position = "Top",
+                        IsPinned = true,
+                        IsAlwaysOnTop = false,
+                        Buttons = new List<ButtonConfig>()
+                    }
+                };
+            }
+
+            var toolbar = config.Toolbars.First(); // Assuming single toolbar for simplicity
+            toolbar.Buttons.Add(button);
+            await _configService.SaveConfigurationAsync(config);
+
+            _logger.LogInformation($"Button '{button.Label}' added to the toolbar.");
+        }
+
+        /// <summary>
+        /// Updates an existing button's configuration.
+        /// </summary>
+        /// <param name="updatedButton">The updated button configuration.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UpdateButtonAsync(ButtonConfig updatedButton)
+        {
+            if (updatedButton == null) throw new ArgumentNullException(nameof(updatedButton));
+
+            var config = await _configService.LoadConfigurationAsync();
+            var toolbar = config.Toolbars.FirstOrDefault();
+            if (toolbar == null)
+            {
+                _logger.LogWarning("No toolbar found to update the button.");
+                return;
+            }
+
+            var button = toolbar.Buttons.FirstOrDefault(b => b.Id == updatedButton.Id);
+            if (button != null)
+            {
+                // Update properties
+                button.Label = updatedButton.Label;
+                button.Type = updatedButton.Type;
+                button.Config = updatedButton.Config;
+                button.Tooltip = updatedButton.Tooltip;
+
+                await _configService.SaveConfigurationAsync(config);
+                _logger.LogInformation($"Button '{button.Label}' updated in the toolbar.");
+            }
+            else
+            {
+                _logger.LogWarning($"Button with ID '{updatedButton.Id}' not found in the toolbar.");
+            }
+        }
+
+        /// <summary>
+        /// Removes a button from the toolbar based on its ID.
+        /// </summary>
+        /// <param name="buttonId">The ID of the button to remove.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task RemoveButtonAsync(string buttonId)
+        {
+            if (string.IsNullOrWhiteSpace(buttonId)) throw new ArgumentException("Button ID cannot be null or whitespace.", nameof(buttonId));
+
+            var config = await _configService.LoadConfigurationAsync();
+            var toolbar = config.Toolbars.FirstOrDefault();
+            if (toolbar == null)
+            {
+                _logger.LogWarning("No toolbar found to remove the button.");
+                return;
+            }
+
+            var button = toolbar.Buttons.FirstOrDefault(b => b.Id == buttonId);
+            if (button != null)
+            {
+                toolbar.Buttons.Remove(button);
+                await _configService.SaveConfigurationAsync(config);
+                _logger.LogInformation($"Button '{button.Label}' removed from the toolbar.");
+            }
+            else
+            {
+                _logger.LogWarning($"Button with ID '{buttonId}' not found in the toolbar.");
+            }
+        }
+
+        /// <summary>
+        /// Reorders buttons in the toolbar based on the provided order.
+        /// </summary>
+        /// <param name="orderedIds">List of button IDs in the desired order.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task ReorderButtonsAsync(List<string> orderedIds)
+        {
+            if (orderedIds == null) throw new ArgumentNullException(nameof(orderedIds));
+
+            var config = await _configService.LoadConfigurationAsync();
+            var toolbar = config.Toolbars.FirstOrDefault();
+            if (toolbar == null)
+            {
+                _logger.LogWarning("No toolbar found to reorder buttons.");
+                return;
+            }
+
+            var orderedButtons = orderedIds.Select(id => toolbar.Buttons.FirstOrDefault(b => b.Id == id)).Where(b => b != null).ToList();
+
+            if (orderedButtons.Count != toolbar.Buttons.Count)
+            {
+                _logger.LogWarning("Mismatch between provided order and existing buttons. Reordering aborted.");
+                return;
+            }
+
+            toolbar.Buttons = orderedButtons;
+            await _configService.SaveConfigurationAsync(config);
+            _logger.LogInformation("Toolbar buttons reordered successfully.");
+        }
+
+        /// <summary>
+        /// Loads the toolbar configuration.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation, containing the toolbar configuration.</returns>
+        public async Task<ToolbarConfig> LoadToolbarConfigAsync()
+        {
+            return await _configService.LoadConfigurationAsync();
+        }
+    }
+}
+
+==================================================
+*** ToolbarService.cs *** | END
+==================================================
+==================================================
+*** UpdateService.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\UpdateService.cs
+==================================================
+using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Squirrel;
+using System.Windows;
+
+namespace ToolBarApp.Services
+{
+    /// <summary>
+    /// Service responsible for managing application updates.
+    /// Utilizes Squirrel.Windows for update operations.
+    /// </summary>
+    public class UpdateService
+    {
+        private readonly ILogger<UpdateService> _logger;
+        private readonly string _updateUrl = "https://your-update-server.com/updates/"; // Replace with your actual update server URL
+
+        public UpdateService(ILogger<UpdateService> logger)
+        {
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Initializes the update service and checks for updates.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task InitializeAsync()
+        {
+            try
+            {
+                using var mgr = await UpdateManager.GitHubUpdateManager(_updateUrl);
+                await CheckForUpdatesAsync(mgr);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to initialize update manager.");
+            }
+        }
+
+        /// <summary>
+        /// Checks for available updates and prompts the user to apply them.
+        /// </summary>
+        /// <param name="mgr">The UpdateManager instance.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task CheckForUpdatesAsync(UpdateManager mgr)
+        {
+            try
+            {
+                var updateInfo = await mgr.CheckForUpdate();
+                if (updateInfo.ReleasesToApply.Count > 0)
+                {
+                    var result = MessageBox.Show($"Update {updateInfo.FutureReleaseEntry.Version} is available. Do you want to update now?",
+                                                 "Update Available",
+                                                 MessageBoxButton.YesNo,
+                                                 MessageBoxImage.Information);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        await mgr.DownloadReleases(updateInfo.ReleasesToApply);
+                        await mgr.UpdateApp();
+                        UpdateManager.RestartApp();
+                    }
+                }
+                else
+                {
+                    _logger.LogInformation("No updates available.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to check for updates.");
+                MessageBox.Show("Failed to check for updates.", "Update Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Applies updates and restarts the application.
+        /// </summary>
+        /// <param name="mgr">The UpdateManager instance.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task ApplyUpdatesAsync(UpdateManager mgr)
+        {
+            try
+            {
+                await mgr.UpdateApp();
+                UpdateManager.RestartApp();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to apply updates.");
+            }
+        }
+    }
+}
+
+==================================================
+*** UpdateService.cs *** | END
+==================================================
+==================================================
+*** PluginServiceJs.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\HostObjects\PluginServiceJs.cs
+==================================================
+using System;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using ToolbarApp.Services;
+using ToolbarApp.Models;
+using ToolbarApp.Services.Interfaces;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using ToolBarApp.Services;
+
+namespace ToolbarApp.Services.HostObjects
+{
+    /// <summary>
+    /// Wrapper class to expose PluginService methods to JavaScript via WebView2.
+    /// </summary>
+    [ComVisible(true)]
+    [ClassInterface(ClassInterfaceType.None)]
+    public class PluginServiceJs(PluginService pluginService, LoggingService logger)
+    {
+
+        /// <summary>
+        /// Retrieves a list of all loaded plugins.
+        /// </summary>
+        /// <returns>A list of plugin names.</returns>
+        public Task<string> GetPluginsAsync()
+        {
+            try
+            {
+                var plugins = pluginService.GetLoadedPlugins().Select(p => p.Name).ToList();
+                var json = System.Text.Json.JsonSerializer.Serialize(plugins);
+                return Task.FromResult(json);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to retrieve plugins: {ex.Message}", ex);
+                return Task.FromResult("Error retrieving plugins.");
+            }
+        }
+
+        /// <summary>
+        /// Executes a plugin's primary action asynchronously.
+        /// </summary>
+        /// <param name="pluginName">The name of the plugin to execute.</param>
+        /// <returns>A message indicating the execution status.</returns>
+        public async Task<string> ExecutePluginAsync(string pluginName)
+        {
+            try
+            {
+                var result = await pluginService.ExecutePluginAsync(pluginName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Plugin execution failed: {ex.Message}", ex);
+                return $"Error executing plugin: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Adds a new plugin dynamically.
+        /// </summary>
+        /// <param name="pluginPath">The file path to the plugin DLL.</param>
+        /// <returns>A message indicating the result of the operation.</returns>
+        public async Task<string> AddPluginAsync(string pluginPath)
+        {
+            try
+            {
+                var plugin = pluginService.LoadPlugin(pluginPath);
+                if (plugin != null)
+                {
+                    pluginService.AddPlugin(plugin);
+                    await pluginService.SavePluginsAsync();
+                    logger.LogInformation($"Plugin added: {plugin.Name}");
+                    return $"Plugin '{plugin.Name}' added successfully.";
+                }
+                else
+                {
+                    return "Failed to load plugin. Ensure it implements IToolbarPlugin.";
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to add plugin: {ex.Message}", ex);
+                return $"Error adding plugin: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Removes an existing plugin by name.
+        /// </summary>
+        /// <param name="pluginName">The name of the plugin to remove.</param>
+        /// <returns>A message indicating the result of the operation.</returns>
+        public async Task<string> RemovePluginAsync(string pluginName)
+        {
+            try
+            {
+                pluginService.RemovePlugin(pluginName);
+                await pluginService.SavePluginsAsync();
+                logger.LogInformation($"Plugin removed: {pluginName}");
+                return $"Plugin '{pluginName}' removed successfully.";
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to remove plugin: {ex.Message}", ex);
+                return $"Error removing plugin: {ex.Message}";
+            }
+        }
+    }
+}
+
+==================================================
+*** PluginServiceJs.cs *** | END
+==================================================
+==================================================
+*** ScriptExecutorJs.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\HostObjects\ScriptExecutorJs.cs
+==================================================
+using System;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using ToolBarApp.Services;
+using ToolBarApp.Services.HostObjects;
+
+namespace ToolbarApp.Services.HostObjects
+{
+    [ComVisible(true)]
+    [ClassInterface(ClassInterfaceType.AutoDual)]
+    [Obsolete]
+    public class ScriptExecutorJs(ScriptExecutor scriptExecutor, ILogger<ScriptExecutorJs> logger)
+    {
+        private readonly ScriptExecutor _scriptExecutor = scriptExecutor ?? throw new ArgumentNullException(nameof(scriptExecutor));
+        private readonly ILogger<ScriptExecutorJs> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+        public async Task<string> ExecuteScriptAsync(string scriptType, string command, bool adminRights)
+        {
+            try
+            {
+                string result = await _scriptExecutor.ExecuteScriptAsync(scriptType, command, adminRights);
+                _logger.LogInformation("Executed {ScriptType} script: {Command}", scriptType, command);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to execute script: {Command}", command);
+                return $"Error executing script: {ex.Message}";
+            }
+        }
+    }
+}
+
+==================================================
+*** ScriptExecutorJs.cs *** | END
+==================================================
+==================================================
+*** SystemServiceJs.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\HostObjects\SystemServiceJs.cs
+==================================================
+using System;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using ToolbarApp.Services;
+using ToolbarApp.Models;
+using System.Windows;
+using ToolBarApp.Services;
+
+namespace ToolbarApp.Services.HostObjects
+{
+    /// <summary>
+    /// Wrapper class to expose SystemService methods to JavaScript via WebView2.
+    /// </summary>
+    [ComVisible(true)]
+    [ClassInterface(ClassInterfaceType.AutoDual)]
+    [Obsolete]
+    public class SystemServiceJs(SystemService systemService, LoggingService loggingService)
+    {
+
+        /// <summary>
+        /// Executes an external application asynchronously.
+        /// </summary>
+        /// <param name="path">Path to the executable.</param>
+        /// <param name="arguments">Arguments for the executable.</param>
+        /// <param name="adminRights">Whether to run with admin rights.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the execution status.</returns>
+        public async Task<string> ExecuteApplicationAsync(string path, string arguments, bool adminRights)
+        {
+            try
+            {
+                await systemService.ExecuteApplicationAsync(path, arguments, adminRights);
+                loggingService.LogInfo($"Executed application: {path} with arguments: {arguments}");
+                return $"Application '{path}' executed successfully.";
+            }
+            catch (Exception ex)
+            {
+                loggingService.LogError($"Failed to execute application: {path}", ex);
+                return $"Error executing application: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Opens a URL in the default web browser.
+        /// </summary>
+        /// <param name="url">The URL to open.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the status message.</returns>
+        public Task<string> OpenUrlAsync(string url)
+        {
+            try
+            {
+                systemService.OpenUrl(url);
+                loggingService.LogInfo($"Opened URL: {url}");
+                return Task.FromResult($"URL '{url}' opened successfully.");
+            }
+            catch (Exception ex)
+            {
+                loggingService.LogError($"Failed to open URL: {url}", ex);
+                return Task.FromResult($"Error opening URL: {ex.Message}");
+            }
+        }
+    }
+}
+
+==================================================
+*** SystemServiceJs.cs *** | END
+==================================================
+==================================================
+*** IToolbarPlugin.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Services\Interfaces\IToolbarPlugin.cs
+==================================================
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace ToolBarApp.Services.Interfaces
+{
+    public interface IToolbarPlugin
+    {
+        string Id { get; }
+        string Name { get; }
+        string Description { get; }
+        string Version { get; }
+        Task InitializeAsync();
+        Task<string> ExecuteAsync(IDictionary<string, object>? parameters = null, CancellationToken cancellationToken = default);
+        Task ShutdownAsync();
+        bool IsCompatible();
+    }
+}
+
+==================================================
+*** IToolbarPlugin.cs *** | END
+==================================================
+==================================================
+*** ButtonStyles.xaml *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Styles\ButtonStyles.xaml
+==================================================
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Toolbar Button Style -->
+    <Style x:Key="ToolbarButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#3E3E3E"/>
+                            <Setter Property="Foreground" Value="#FFFFFF"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#5A5A5A"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="#A0A0A0"/>
+                        </Trigger>
+                        <Trigger Property="IsDefaulted" Value="True">
+                            <Setter Property="BorderBrush" Value="#FF9900"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Specific Styles for Control Buttons -->
+    <Style x:Key="ControlButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="Height" Value="30"/>
+    </Style>
+
+    <!-- Specific Styles for User-Added Buttons -->
+    <Style x:Key="UserButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="30"/>
+    </Style>
+</ResourceDictionary>
+
+==================================================
+*** ButtonStyles.xaml *** | END
+==================================================
+==================================================
+*** WindowStyles.xaml *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Styles\WindowStyles.xaml
+==================================================
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:ToolBarApp.Helpers">
+    <!-- Window Style -->
+    <Style x:Key="MainWindowStyle" TargetType="Window">
+        <Setter Property="Background" Value="#1E1E1E"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="WindowStyle" Value="None"/>
+        <Setter Property="AllowsTransparency" Value="True"/>
+        <Setter Property="ResizeMode" Value="CanResizeWithGrip"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Window">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8">
+                        <Grid>
+                            <AdornerDecorator>
+                                <ContentPresenter/>
+                            </AdornerDecorator>
+                            <ResizeGrip HorizontalAlignment="Right" VerticalAlignment="Bottom" Visibility="{Binding ResizeMode, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ResizeModeToVisibilityConverter}}"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Including the ResizeModeToVisibilityConverter -->
+    <local:ResizeModeToVisibilityConverter x:Key="ResizeModeToVisibilityConverter"/>
+</ResourceDictionary>
+
+==================================================
+*** WindowStyles.xaml *** | END
+==================================================
+==================================================
+*** ConfigurationServiceTests.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Tests\ConfigurationServiceTests.cs
+==================================================
+/*
+using Xunit;
+using Moq;
+using Microsoft.Extensions.Logging;
+using System.Windows.Forms;
+using ToolBarApp.Models;
+using ToolBarApp.Services;
+using ToolBarApp.Services.Interfaces;
+
+namespace ToolBarApp.Tests
+{
+    public class ConfigurationServiceTests : IDisposable
+    {
+        private readonly string _testConfigFilePath;
+        private readonly Mock<ILogger<ConfigurationService>> _mockLogger;
+        private readonly ConfigurationService _configurationService;
+
+        public ConfigurationServiceTests()
+        {
+            // Setup a temporary configuration file
+            _testConfigFilePath = Path.Combine(Path.GetTempPath(), "ToolBarApp_TestConfig.json");
+            if (File.Exists(_testConfigFilePath))
+            {
+                File.Delete(_testConfigFilePath);
+            }
+
+            // Setup Mock Logger
+            _mockLogger = new Mock<ILogger<ConfigurationService>>();
+
+            // Initialize ConfigurationService with the test config file path
+            _configurationService = new ConfigurationServiceForTest(_testConfigFilePath, _mockLogger.Object);
+        }
+
+        [Fact]
+        public async Task LoadConfigurationAsync_ShouldReturnDefaultWhenFileDoesNotExist()
+        {
+            // Arrange
+            // Ensure the config file does not exist
+            if (File.Exists(_testConfigFilePath))
+            {
+                File.Delete(_testConfigFilePath);
+            }
+
+            // Act
+            var config = await _configurationService.LoadConfigurationAsync();
+
+            // Assert
+            Assert.NotNull(config);
+            Assert.NotNull(config.ToolbarConfig);
+            Assert.Empty(config.ToolbarConfig.Toolbars);
+            _mockLogger.Verify(
+                x => x.Log(
+                    It.Is<Serilog.Events.LogEvent>(le => le.Level == Serilog.Events.LogEventLevel.Information && le.MessageTemplate.Text.Contains("return default configuration")),
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task LoadConfigurationAsync_ShouldLoadExistingConfiguration()
+        {
+            // Arrange
+            var expectedConfig = new AppConfig
+            {
+                ToolbarConfig = new ToolbarConfig
+                {
+                    Toolbars =
+                    [
+                        new() 
+                        {
+                            Position = "Top",
+                            IsPinned = true,
+                            IsAlwaysOnTop = false,
+                            Buttons =
+                            [
+                                new() 
+                                {
+                                    Label = "Test Button",
+                                    Type = "script",
+                                    Config = new System.Collections.Generic.Dictionary<string, object>
+                                    {
+                                        { "scriptType", "PowerShell" },
+                                        { "command", "Get-Process" },
+                                        { "adminRights", false }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            };
+
+            var json = JsonSerializer.Serialize(expectedConfig, new JsonSerializerOptions { WriteIndented = true });
+            await File.WriteAllTextAsync(_testConfigFilePath, json);
+
+            // Act
+            var config = await _configurationService.LoadConfigurationAsync();
+
+            // Assert
+            Assert.NotNull(config);
+            Assert.NotNull(config.ToolbarConfig);
+            Assert.Single(config.ToolbarConfig.Toolbars);
+            Assert.Equal("Top", config.ToolbarConfig.Toolbars[0].Position);
+            Assert.True(config.ToolbarConfig.Toolbars[0].IsPinned);
+            Assert.False(config.ToolbarConfig.Toolbars[0].IsAlwaysOnTop);
+            Assert.Single(config.ToolbarConfig.Toolbars[0].Buttons);
+            Assert.Equal("Test Button", config.ToolbarConfig.Toolbars[0].Buttons[0].Label);
+            Assert.Equal("script", config.ToolbarConfig.Toolbars[0].Buttons[0].Type);
+            Assert.Equal("PowerShell", config.ToolbarConfig.Toolbars[0].Buttons[0].Config["scriptType"]);
+            Assert.Equal("Get-Process", config.ToolbarConfig.Toolbars[0].Buttons[0].Config["command"]);
+            Assert.False((bool)config.ToolbarConfig.Toolbars[0].Buttons[0].Config["adminRights"]);
+
+            _mockLogger.Verify(
+                x => x.Log(
+                    It.Is<Serilog.Events.LogEvent>(le => le.Level == Serilog.Events.LogEventLevel.Information && le.MessageTemplate.Text.Contains("loaded configuration successfully")),
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task SaveConfigurationAsync_ShouldWriteConfigurationToFile()
+        {
+            // Arrange
+            var configToSave = new AppConfig
+            {
+                ToolbarConfig = new ToolbarConfig
+                {
+                    Toolbars =
+                    [
+                        new() 
+                        {
+                            Position = "Bottom",
+                            IsPinned = false,
+                            IsAlwaysOnTop = true,
+                            Buttons =
+                            [
+                                new() 
+                                {
+                                    Label = "Save Button",
+                                    Type = "application",
+                                    Config = new System.Collections.Generic.Dictionary<string, object>
+                                    {
+                                        { "path", "notepad.exe" },
+                                        { "arguments", "" },
+                                        { "adminRights", false }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            };
+
+            // Act
+            await _configurationService.SaveConfigurationAsync(configToSave);
+
+            // Assert
+            Assert.True(File.Exists(_testConfigFilePath));
+            var savedJson = await File.ReadAllTextAsync(_testConfigFilePath);
+            var savedConfig = JsonSerializer.Deserialize<AppConfig>(savedJson);
+
+            Assert.NotNull(savedConfig);
+            Assert.NotNull(savedConfig.ToolbarConfig);
+            Assert.Single(savedConfig.ToolbarConfig.Toolbars);
+            Assert.Equal("Bottom", savedConfig.ToolbarConfig.Toolbars[0].Position);
+            Assert.False(savedConfig.ToolbarConfig.Toolbars[0].IsPinned);
+            Assert.True(savedConfig.ToolbarConfig.Toolbars[0].IsAlwaysOnTop);
+            Assert.Single(savedConfig.ToolbarConfig.Toolbars[0].Buttons);
+            Assert.Equal("Save Button", savedConfig.ToolbarConfig.Toolbars[0].Buttons[0].Label);
+            Assert.Equal("application", savedConfig.ToolbarConfig.Toolbars[0].Buttons[0].Type);
+            Assert.Equal("notepad.exe", savedConfig.ToolbarConfig.Toolbars[0].Buttons[0].Config["path"]);
+            Assert.Equal("", savedConfig.ToolbarConfig.Toolbars[0].Buttons[0].Config["arguments"]);
+            Assert.False((bool)savedConfig.ToolbarConfig.Toolbars[0].Buttons[0].Config["adminRights"]);
+
+            _mockLogger.Verify(
+                x => x.Log(
+                    It.Is<Serilog.Events.LogEvent>(le => le.Level == Serilog.Events.LogEventLevel.Information && le.MessageTemplate.Text.Contains("Configuration saved successfully")),
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task LoadConfigurationAsync_ShouldHandleDeserializationErrorsGracefully()
+        {
+            // Arrange
+            // Write invalid JSON to the config file
+            await File.WriteAllTextAsync(_testConfigFilePath, "Invalid JSON Content");
+
+            // Act
+            var config = await _configurationService.LoadConfigurationAsync();
+
+            // Assert
+            Assert.NotNull(config);
+            Assert.NotNull(config.ToolbarConfig);
+            Assert.Empty(config.ToolbarConfig.Toolbars);
+
+            _mockLogger.Verify(
+                x => x.Log(
+                    It.Is<Serilog.Events.LogEvent>(le => le.Level == Serilog.Events.LogEventLevel.Error && le.MessageTemplate.Text.Contains("Error loading configuration.")),
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.Once);
+        }
+
+        // Dispose method to clean up the temporary config file after tests
+        public void Dispose()
+        {
+            if (File.Exists(_testConfigFilePath))
+            {
+                try
+                {
+                    File.Delete(_testConfigFilePath);
+                }
+                catch
+                {
+                    // If deletion fails, ignore to prevent exceptions during test teardown
+                }
+            }
+        }
+    }
+
+    // Custom ConfigurationService for testing to use the test config file path
+    public class ConfigurationServiceForTest : ConfigurationService
+    {
+        private readonly string _testConfigFilePath;
+
+        public ConfigurationServiceForTest(string testConfigFilePath, ILogger<ConfigurationService> logger)
+            : base(logger)
+        {
+            _testConfigFilePath = testConfigFilePath;
+        }
+
+        protected override string GetConfigFilePath()
+        {
+            return _testConfigFilePath;
+        }
+    }
+}
+*/
+==================================================
+*** ConfigurationServiceTests.cs *** | END
+==================================================
+==================================================
+*** PluginServicesTests.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Tests\PluginServicesTests.cs
+==================================================
+/*
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Reflection.Emit;
+using Xunit;
+using Moq;
+using Microsoft.Extensions.Logging;
+using System.Windows.Forms;
+using ToolBarApp.Models;
+using ToolBarApp.Services;
+using ToolBarApp.Services.Interfaces;
+
+namespace ToolBarApp.Tests
+{
+    public class PluginServicesTests : IDisposable
+    {
+        private readonly string _testPluginDirectory;
+        private readonly Mock<ILogger<PluginService>> _mockLogger;
+        private readonly ConfigurationService _configurationService;
+        private readonly PluginService _pluginService;
+
+        public PluginServicesTests()
+        {
+            // Setup a temporary directory for plugins
+            _testPluginDirectory = Path.Combine(Path.GetTempPath(), "ToolBarApp_TestPlugins");
+            if (!Directory.Exists(_testPluginDirectory))
+            {
+                Directory.CreateDirectory(_testPluginDirectory);
+            }
+
+            // Initialize ConfigurationService with test plugin directory
+            _configurationService = new ConfigurationServiceForTest(_testPluginDirectory);
+
+            // Setup Mock Logger
+            _mockLogger = new Mock<ILogger<PluginService>>();
+
+            // Initialize PluginService with mocked dependencies
+            _pluginService = new PluginService(_mockLogger.Object, _configurationService);
+        }
+
+        [Fact]
+        public async Task LoadPluginsAsync_ShouldLoadValidPlugins()
+        {
+            // Arrange
+            // Create a mock plugin assembly
+            string pluginPath = CreateMockPlugin("TestPlugin1");
+            await Task.CompletedTask;
+
+            // Act
+            _pluginService.LoadAllPlugins();
+
+            // Assert
+            var loadedPlugins = _pluginService.GetLoadedPlugins();
+            Assert.Single(loadedPlugins);
+            Assert.Equal("TestPlugin1", loadedPlugins.First().Name);
+        }
+
+        [Fact]
+        public void LoadPluginsAsync_ShouldIgnoreInvalidPlugins()
+        {
+            // Arrange
+            // Create an invalid plugin assembly (does not implement IToolbarPlugin)
+            string invalidPluginPath = Path.Combine(_testPluginDirectory, "InvalidPlugin.dll");
+            File.WriteAllBytes(invalidPluginPath, [0x00, 0x01, 0x02]); // Invalid DLL
+
+            // Act
+            _pluginService.LoadAllPlugins();
+
+            // Assert
+            var loadedPlugins = _pluginService.GetLoadedPlugins();
+            Assert.Empty(loadedPlugins);
+
+            // Verify that an error was logged
+            _mockLogger.Verify(
+                x => x.Log(
+                    It.Is<Serilog.Events.LogEvent>(le => le.Level == Serilog.Events.LogEventLevel.Error),
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.AtLeastOnce);
+        }
+
+        [Fact]
+        public void AddPluginAsync_ShouldAddValidPlugin()
+        {
+            // Arrange
+            string pluginPath = CreateMockPlugin("TestPlugin2");
+
+            // Act
+            var plugin = _pluginService.LoadPlugin(pluginPath);
+            _pluginService.AddPlugin(plugin);
+
+            // Assert
+            var loadedPlugins = _pluginService.GetLoadedPlugins();
+            Assert.Single(loadedPlugins);
+            Assert.Equal("TestPlugin2", loadedPlugins.First().Name);
+        }
+
+        [Fact]
+        public void AddPluginAsync_ShouldNotAddDuplicatePlugin()
+        {
+            // Arrange
+            string pluginPath = CreateMockPlugin("TestPlugin3");
+
+            // Act
+            var plugin1 = _pluginService.LoadPlugin(pluginPath);
+            _pluginService.AddPlugin(plugin1);
+            var plugin2 = _pluginService.LoadPlugin(pluginPath);
+            _pluginService.AddPlugin(plugin2); // Attempt to add duplicate
+
+            // Assert
+            var loadedPlugins = _pluginService.GetLoadedPlugins();
+            Assert.Single(loadedPlugins); // Should still have only one instance
+        }
+
+        [Fact]
+        public void RemovePluginAsync_ShouldRemoveExistingPlugin()
+        {
+            // Arrange
+            string pluginPath = CreateMockPlugin("TestPlugin4");
+            var plugin = _pluginService.LoadPlugin(pluginPath);
+            _pluginService.AddPlugin(plugin);
+            Assert.Single(_pluginService.GetLoadedPlugins());
+
+            // Act
+            _pluginService.RemovePlugin("TestPlugin4");
+
+            // Assert
+            var loadedPlugins = _pluginService.GetLoadedPlugins();
+            Assert.Empty(loadedPlugins);
+        }
+
+        [Fact]
+        public async Task ExecutePluginAsync_ShouldExecuteExistingPlugin()
+        {
+            // Arrange
+            string pluginPath = CreateMockPlugin("TestPlugin5");
+            var plugin = _pluginService.LoadPlugin(pluginPath);
+            _pluginService.AddPlugin(plugin);
+
+            // Act
+            var executionResult = await _pluginService.ExecutePluginAsync("TestPlugin5");
+
+            // Assert
+            Assert.Equal("Plugin 'TestPlugin5' executed successfully.", executionResult);
+
+            // Verify that an information log was created
+            _mockLogger.Verify(
+                x => x.Log(
+                    It.Is<Serilog.Events.LogEvent>(le => le.Level == Serilog.Events.LogEventLevel.Information && le.MessageTemplate.Text.Contains("Executed plugin")),
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task ExecutePluginAsync_ShouldReturnErrorForNonExistentPlugin()
+        {
+            // Act
+            var executionResult = await _pluginService.ExecutePluginAsync("NonExistentPlugin");
+
+            // Assert
+            Assert.Equal("Plugin with ID 'NonExistentPlugin' not found.", executionResult);
+
+            // Verify that a warning log was created
+            _mockLogger.Verify(
+                x => x.Log(
+                    It.Is<Serilog.Events.LogEvent>(le => le.Level == Serilog.Events.LogEventLevel.Warning && le.MessageTemplate.Text.Contains("not found")),
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+                Times.Once);
+        }
+
+        // Helper method to create a mock plugin assembly that implements IToolbarPlugin
+        private string CreateMockPlugin(string pluginName)
+        {
+            string assemblyName = $"{pluginName}.dll";
+            string assemblyPath = Path.Combine(_testPluginDirectory, assemblyName);
+
+            var assemblyNameDef = new AssemblyName(pluginName);
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyNameDef, AssemblyBuilderAccess.Save, _testPluginDirectory);
+            var moduleBuilder = assemblyBuilder.DefineDynamicModule(pluginName, assemblyNameDef.Name + ".dll");
+
+            // Define a public class that implements IToolbarPlugin
+            var typeBuilder = moduleBuilder.DefineType("ToolBarApp.Plugins." + pluginName,
+                TypeAttributes.Public | TypeAttributes.Class,
+                null,
+                [typeof(IToolbarPlugin)]);
+
+            // Implement the Name property
+            var nameProperty = typeBuilder.DefineProperty("Name", PropertyAttributes.HasDefault, typeof(string), null);
+            var getNameMethod = typeBuilder.DefineMethod("get_Name",
+                MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.SpecialName | MethodAttributes.HideBySig,
+                typeof(string),
+                Type.EmptyTypes);
+
+            var ilGen = getNameMethod.GetILGenerator();
+            ilGen.Emit(OpCodes.Ldstr, pluginName);
+            ilGen.Emit(OpCodes.Ret);
+
+            nameProperty.SetGetMethod(getNameMethod);
+
+            // Implement the GetButtonConfig method
+            var getButtonConfigMethod = typeBuilder.DefineMethod("GetButtonConfig",
+                MethodAttributes.Public | MethodAttributes.Virtual,
+                typeof(ButtonConfig),
+                Type.EmptyTypes);
+
+            ilGen = getButtonConfigMethod.GetILGenerator();
+            ilGen.Emit(OpCodes.Newobj, typeof(ButtonConfig).GetConstructor(Type.EmptyTypes));
+            ilGen.Emit(OpCodes.Dup);
+            ilGen.Emit(OpCodes.Ldstr, pluginName + " Button");
+            ilGen.Emit(OpCodes.Callvirt, typeof(ButtonConfig).GetProperty("Label").GetSetMethod());
+            ilGen.Emit(OpCodes.Dup);
+            ilGen.Emit(OpCodes.Ldstr, "plugin");
+            ilGen.Emit(OpCodes.Callvirt, typeof(ButtonConfig).GetProperty("Type").GetSetMethod());
+            // For simplicity, leave Config empty
+            ilGen.Emit(OpCodes.Ret);
+
+            typeBuilder.DefineMethodOverride(getNameMethod, typeof(IToolbarPlugin).GetProperty("Name").GetGetMethod());
+            typeBuilder.DefineMethodOverride(getButtonConfigMethod, typeof(IToolbarPlugin).GetMethod("GetButtonConfig"));
+
+            // Implement the OnButtonClick method
+            var onButtonClickMethod = typeBuilder.DefineMethod("OnButtonClick",
+                MethodAttributes.Public | MethodAttributes.Virtual,
+                typeof(void),
+                Type.EmptyTypes);
+
+            ilGen = onButtonClickMethod.GetILGenerator();
+            ilGen.Emit(OpCodes.Ret); // No operation
+
+            typeBuilder.DefineMethodOverride(onButtonClickMethod, typeof(IToolbarPlugin).GetMethod("OnButtonClick"));
+
+            // Create the type and save the assembly
+            typeBuilder.CreateType();
+            assemblyBuilder.Save(assemblyNameDef.Name + ".dll");
+
+            return assemblyPath;
+        }
+
+        // Dispose method to clean up the temporary plugin directory after tests
+        public void Dispose()
+        {
+            if (Directory.Exists(_testPluginDirectory))
+            {
+                try
+                {
+                    Directory.Delete(_testPluginDirectory, true);
+                }
+                catch
+                {
+                    // If deletion fails, ignore to prevent exceptions during test teardown
+                }
+            }
+        }
+    }
+
+    // Custom ConfigurationService for testing to use the test plugin directory
+    public class ConfigurationServiceForTest : ConfigurationService
+    {
+        private readonly string _pluginDirectory;
+
+        public ConfigurationServiceForTest(string pluginDirectory)
+        {
+            _pluginDirectory = pluginDirectory;
+        }
+
+        protected override string GetPluginDirectory()
+        {
+            return _pluginDirectory;
+        }
+    }
+}
+*/
+==================================================
+*** PluginServicesTests.cs *** | END
+==================================================
+==================================================
+*** ButtonConfigWindow.xaml *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Views\ButtonConfigWindow.xaml
+==================================================
+<!-- ButtonConfigWindow.xaml -->
+<Window x:Class="ToolBarApp.Views.ButtonConfigWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Configure Button" Height="300" Width="400">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Label:" Grid.Row="0" VerticalAlignment="Center"/>
+        <TextBox x:Name="LabelTextBox" Grid.Row="0" Margin="60,0,0,0" />
+
+        <TextBlock Text="Type:" Grid.Row="1" VerticalAlignment="Center" Margin="0,10,0,0"/>
+        <ComboBox x:Name="TypeComboBox" Grid.Row="1" Margin="60,10,0,0" Width="150">
+            <ComboBoxItem Content="script" />
+            <ComboBoxItem Content="application" />
+            <ComboBoxItem Content="url" />
+            <ComboBoxItem Content="plugin" />
+        </ComboBox>
+
+        <TextBlock Text="Tooltip:" Grid.Row="2" VerticalAlignment="Center" Margin="0,10,0,0"/>
+        <TextBox x:Name="TooltipTextBox" Grid.Row="2" Margin="60,10,0,0" />
+
+        <!-- Additional configuration fields can be added here based on Type -->
+
+        <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Save" Width="75" Click="SaveButton_Click" Margin="0,0,10,0"/>
+            <Button Content="Cancel" Width="75" Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
+
+==================================================
+*** ButtonConfigWindow.xaml *** | END
+==================================================
+==================================================
+*** ButtonConfigWindow.xaml.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Views\ButtonConfigWindow.xaml.cs
+==================================================
+// ButtonConfigWindow.xaml.cs
+using System;
+using System.Windows;
+using ToolBarApp.Models;
+
+namespace ToolBarApp.Views
+{
+    /// <summary>
+    /// Interaction logic for ButtonConfigWindow.xaml
+    /// </summary>
+    public partial class ButtonConfigWindow : Window
+    {
+        public ButtonConfig ButtonConfig { get; private set; }
+
+        public ButtonConfigWindow(ButtonConfig buttonConfig)
+        {
+            InitializeComponent();
+            ButtonConfig = buttonConfig;
+
+            // Initialize fields with existing button configuration
+            LabelTextBox.Text = ButtonConfig.Label;
+            TypeComboBox.SelectedItem = GetComboBoxItem(ButtonConfig.Type);
+            TooltipTextBox.Text = ButtonConfig.Tooltip;
+
+            // TODO: Initialize additional fields based on Type
+        }
+
+        private ComboBoxItem GetComboBoxItem(string type)
+        {
+            foreach (ComboBoxItem item in TypeComboBox.Items)
+            {
+                if (item.Content.ToString().Equals(type, StringComparison.OrdinalIgnoreCase))
+                    return item;
+            }
+            return null;
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Validate and save the configuration
+            ButtonConfig.Label = LabelTextBox.Text;
+            if (TypeComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                ButtonConfig.Type = selectedItem.Content.ToString().ToLower();
+            }
+            ButtonConfig.Tooltip = TooltipTextBox.Text;
+
+            // TODO: Save additional configurations based on Type
+
+            this.DialogResult = true;
+            this.Close();
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
+            this.Close();
+        }
+    }
+}
+
+==================================================
+*** ButtonConfigWindow.xaml.cs *** | END
+==================================================
+==================================================
+*** MainWindow.xaml *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Views\MainWindow.xaml
+==================================================
+<Window x:Class="ToolbarApp.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        Title="Professional Toolbar" Height="450" Width="800"
+        Style="{StaticResource MainWindowStyle}">
+    <Grid>
+        <wv2:WebView2 x:Name="webView" />
+    </Grid>
+</Window>
+
+==================================================
+*** MainWindow.xaml *** | END
+==================================================
+==================================================
+*** MainWindow.xaml.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Views\MainWindow.xaml.cs
+==================================================
+// Views/MainWindow.xaml.cs
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text.Json;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms; // Ensure you have added a reference to System.Windows.Forms
+using Microsoft.Web.WebView2.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using ToolBarApp.Models;
+using ToolBarApp.Services;
+
+namespace ToolBarApp.Views
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        private readonly ToolbarService _toolbarService;
+        private readonly ILogger<MainWindow> _logger;
+        private readonly ConfigurationService _configService;
+        private readonly TerminalService _terminalService;
+        private NotifyIcon _trayIcon;
+
+        public MainWindow(ToolbarService toolbarService, ILogger<MainWindow> logger, ConfigurationService configService, TerminalService terminalService)
+        {
+            InitializeComponent();
+            _toolbarService = toolbarService ?? throw new ArgumentNullException(nameof(toolbarService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _terminalService = terminalService ?? throw new ArgumentNullException(nameof(terminalService));
+            _configService = configService ?? throw new ArgumentNullException(nameof(configService));
+
+            InitializeWebView();
+            InitializeTrayIcon();
+            this.Closed += MainWindow_Closed;
+        }
+
+        /// <summary>
+        /// Initializes the WebView2 control and sets up host objects.
+        /// </summary>
+        private async void InitializeWebView()
+        {
+            try
+            {
+                await webView.EnsureCoreWebView2Async(null);
+                webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                webView.CoreWebView2.Settings.AreDevToolsEnabled = false;
+
+                // Register host objects to be accessible from JavaScript
+                webView.CoreWebView2.AddHostObjectToScript("scriptExecutor", new ScriptExecutorJs(_toolbarService, _logger));
+                webView.CoreWebView2.AddHostObjectToScript("systemService", new SystemServiceJs(_toolbarService, _logger));
+                webView.CoreWebView2.AddHostObjectToScript("pluginService", new PluginServiceJs(_toolbarService, _logger));
+
+                // Handle messages from JavaScript
+                webView.CoreWebView2.WebMessageReceived += WebView_WebMessageReceived;
+
+                // Load the initial HTML content
+                LoadHtmlContent();
+
+                // Load toolbar configuration and render buttons
+                await LoadAndRenderToolbarAsync();
+
+                _logger.LogInformation("WebView2 initialized successfully.");
+
+                // Log the initialization to the terminal
+                await _terminalService.LogAsync("WebView2 initialized successfully.", LogLevel.Information);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error initializing WebView2.");
+                System.Windows.MessageBox.Show("Failed to initialize the web view. Please check the logs for more details.", "Initialization Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                await _terminalService.LogAsync($"Error initializing WebView2: {ex.Message}", LogLevel.Error);
+            }
+        }
+
+        /// <summary>
+        /// Loads the HTML content into WebView2.
+        /// </summary>
+        private void LoadHtmlContent()
+        {
+            try
+            {
+                string appDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string htmlFilePath = Path.Combine(appDirectory, "wwwroot", "index.html");
+
+                if (File.Exists(htmlFilePath))
+                {
+                    webView.CoreWebView2.Navigate(new Uri(htmlFilePath).AbsoluteUri);
+                    _logger.LogInformation($"Loaded HTML content from {htmlFilePath}.");
+                    _terminalService.LogAsync($"Loaded HTML content from {htmlFilePath}.", LogLevel.Information).Wait();
+                }
+                else
+                {
+                    _logger.LogError($"HTML file not found at path: {htmlFilePath}");
+                    System.Windows.MessageBox.Show("HTML file not found. Please ensure all frontend files are present.", "File Not Found", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _terminalService.LogAsync($"HTML file not found at path: {htmlFilePath}.", LogLevel.Error).Wait();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading HTML content.");
+                System.Windows.MessageBox.Show("Failed to load HTML content. Please check the logs for more details.", "Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _terminalService.LogAsync($"Error loading HTML content: {ex.Message}", LogLevel.Error).Wait();
+            }
+        }
+
+        /// <summary>
+        /// Loads the toolbar configuration and renders buttons.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task LoadAndRenderToolbarAsync()
+        {
+            try
+            {
+                var config = await _toolbarService.LoadToolbarConfigAsync();
+
+                if (config.Toolbars != null && config.Toolbars.Count > 0)
+                {
+                    foreach (var toolbar in config.Toolbars)
+                    {
+                        foreach (var button in toolbar.Buttons)
+                        {
+                            // Serialize button to JSON and send to frontend to add the button
+                            string buttonJson = JsonSerializer.Serialize(button);
+                            await webView.CoreWebView2.ExecuteScriptAsync($"toolbar.addButton({buttonJson});");
+                        }
+                    }
+
+                    _logger.LogInformation("Toolbar buttons loaded and rendered successfully.");
+                    await _terminalService.LogAsync("Toolbar buttons loaded and rendered successfully.", LogLevel.Information);
+                }
+                else
+                {
+                    _logger.LogWarning("No toolbar configurations found. Initializing with sample buttons.");
+                    await _terminalService.LogAsync("No toolbar configurations found. Initializing with sample buttons.", LogLevel.Warning);
+                    InitializeSampleButtons();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading and rendering toolbar.");
+                System.Windows.MessageBox.Show("Failed to load toolbar configuration. Please check the logs for more details.", "Configuration Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                await _terminalService.LogAsync($"Error loading and rendering toolbar: {ex.Message}", LogLevel.Error);
+            }
+        }
+
+        /// <summary>
+        /// Initializes sample buttons if no configuration is found.
+        /// </summary>
+        private void InitializeSampleButtons()
+        {
+            var sampleButtons = new List<ButtonConfig>
+            {
+                new ButtonConfig
+                {
+                    Id = "btn1",
+                    Label = "PowerShell Test",
+                    Type = "script",
+                    Config = new Dictionary<string, object>
+                    {
+                        { "scriptType", "PowerShell" },
+                        { "command", "Get-Process | Select-Object -First 5" },
+                        { "adminRights", false }
+                    },
+                    Tooltip = "Execute a PowerShell script"
+                },
+                new ButtonConfig
+                {
+                    Id = "btn2",
+                    Label = "Open Notepad",
+                    Type = "application",
+                    Config = new Dictionary<string, object>
+                    {
+                        { "path", "notepad.exe" },
+                        { "arguments", "" },
+                        { "adminRights", false }
+                    },
+                    Tooltip = "Launch Notepad"
+                },
+                new ButtonConfig
+                {
+                    Id = "btn3",
+                    Label = "Google",
+                    Type = "url",
+                    Config = new Dictionary<string, object>
+                    {
+                        { "url", "https://www.google.com" }
+                    },
+                    Tooltip = "Open Google in default browser"
+                }
+            };
+
+            // Add sample buttons via the toolbar service
+            foreach (var button in sampleButtons)
+            {
+                _toolbarService.AddButtonAsync(button).Wait();
+                _logger.LogInformation($"Sample button '{button.Label}' added.");
+                _terminalService.LogAsync($"Sample button '{button.Label}' added.", LogLevel.Information).Wait();
+            }
+
+            _logger.LogInformation("Sample buttons initialized.");
+            _terminalService.LogAsync("Sample buttons initialized.", LogLevel.Information).Wait();
+        }
+
+        /// <summary>
+        /// Handles messages received from JavaScript.
+        /// </summary>
+        private async void WebView_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
+        {
+            try
+            {
+                var message = JsonSerializer.Deserialize<Dictionary<string, object>>(e.WebMessageAsJson);
+                if (message == null || !message.ContainsKey("type"))
+                {
+                    _logger.LogWarning("Received invalid message from frontend.");
+                    await _terminalService.LogAsync("Received invalid message from frontend.", LogLevel.Warning);
+                    return;
+                }
+
+                string messageType = message["type"].ToString();
+
+                switch (messageType)
+                {
+                    case "saveButtonOrder":
+                        if (message.ContainsKey("order"))
+                        {
+                            var order = JsonSerializer.Deserialize<List<string>>(message["order"].ToString());
+                            await _toolbarService.ReorderButtonsAsync(order);
+                            // Notify frontend that order is saved
+                            await webView.CoreWebView2.PostWebMessageAsJsonAsync(JsonSerializer.Serialize(new { type = "buttonOrderSaved" }));
+                            _logger.LogInformation("Button order saved successfully.");
+                            await _terminalService.LogAsync("Button order saved successfully.", LogLevel.Information);
+                        }
+                        break;
+
+                    case "openConfigDialog":
+                        if (message.ContainsKey("button"))
+                        {
+                            var buttonJson = message["button"].ToString();
+                            var button = JsonSerializer.Deserialize<ButtonConfig>(buttonJson);
+                            OpenConfigDialog(button);
+                        }
+                        break;
+
+                    case "addButton":
+                        if (message.ContainsKey("button"))
+                        {
+                            var newButtonJson = message["button"].ToString();
+                            var newButton = JsonSerializer.Deserialize<ButtonConfig>(newButtonJson);
+                            await _toolbarService.AddButtonAsync(newButton);
+                            _logger.LogInformation($"Button '{newButton.Label}' added via frontend.");
+                            await _terminalService.LogAsync($"Button '{newButton.Label}' added via frontend.", LogLevel.Information);
+                        }
+                        break;
+
+                    case "removeButton":
+                        if (message.ContainsKey("buttonId"))
+                        {
+                            var buttonId = message["buttonId"].ToString();
+                            await _toolbarService.RemoveButtonAsync(buttonId);
+                            _logger.LogInformation($"Button with ID '{buttonId}' removed via frontend.");
+                            await _terminalService.LogAsync($"Button with ID '{buttonId}' removed via frontend.", LogLevel.Information);
+                        }
+                        break;
+
+                    // Handle other message types as needed
+
+                    default:
+                        _logger.LogWarning($"Unknown message type received: {messageType}");
+                        await _terminalService.LogAsync($"Unknown message type received: {messageType}", LogLevel.Warning);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing message from frontend.");
+                await _terminalService.LogAsync($"Error processing message from frontend: {ex.Message}", LogLevel.Error);
+            }
+        }
+
+        /// <summary>
+        /// Opens the configuration dialog for a specific button.
+        /// </summary>
+        /// <param name="button">The button configuration to edit.</param>
+        private void OpenConfigDialog(ButtonConfig button)
+        {
+            try
+            {
+                var configWindow = new ButtonConfigWindow(button);
+                configWindow.Owner = this;
+                if (configWindow.ShowDialog() == true)
+                {
+                    // Update the button configuration via the toolbar service
+                    _toolbarService.UpdateButtonAsync(button).Wait();
+
+                    // Notify frontend to update the button
+                    string updatedButtonJson = JsonSerializer.Serialize(button);
+                    webView.CoreWebView2.ExecuteScriptAsync($"toolbar.updateButton({updatedButtonJson});").Wait();
+
+                    _logger.LogInformation($"Button '{button.Label}' configuration updated via dialog.");
+                    _terminalService.LogAsync($"Button '{button.Label}' configuration updated via dialog.", LogLevel.Information).Wait();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating button configuration for '{button.Label}'.");
+                System.Windows.MessageBox.Show("Failed to update button configuration. Please check the logs for more details.", "Update Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _terminalService.LogAsync($"Error updating button configuration for '{button.Label}': {ex.Message}", LogLevel.Error).Wait();
+            }
+        }
+
+        /// <summary>
+        /// Initializes the system tray icon and its context menu.
+        /// </summary>
+        private void InitializeTrayIcon()
+        {
+            try
+            {
+                _trayIcon = new NotifyIcon
+                {
+                    Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location),
+                    Visible = true,
+                    Text = "Professional Toolbar"
+                };
+
+                var contextMenu = new ContextMenuStrip();
+                contextMenu.Items.Add("Show/Hide Toolbar", null, ToggleVisibility);
+                contextMenu.Items.Add("Open Terminal", null, OpenTerminal);
+                contextMenu.Items.Add(new ToolStripSeparator());
+                contextMenu.Items.Add("Exit", null, ExitApplication);
+
+                _trayIcon.ContextMenuStrip = contextMenu;
+                _trayIcon.DoubleClick += (s, e) => ToggleVisibility(s, e);
+
+                _logger.LogInformation("System tray icon initialized.");
+                _terminalService.LogAsync("System tray icon initialized.", LogLevel.Information).Wait();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error initializing system tray icon.");
+                _terminalService.LogAsync($"Error initializing system tray icon: {ex.Message}", LogLevel.Error).Wait();
+            }
+        }
+
+        /// <summary>
+        /// Toggles the visibility of the main window.
+        /// </summary>
+        private void ToggleVisibility(object sender, EventArgs e)
+        {
+            if (this.Visibility == Visibility.Visible)
+            {
+                this.Hide();
+                _logger.LogInformation("Main window hidden via tray icon.");
+                _terminalService.LogAsync("Main window hidden via tray icon.", LogLevel.Information).Wait();
+            }
+            else
+            {
+                this.Show();
+                this.WindowState = WindowState.Normal;
+                this.Activate();
+                _logger.LogInformation("Main window shown via tray icon.");
+                _terminalService.LogAsync("Main window shown via tray icon.", LogLevel.Information).Wait();
+            }
+        }
+
+        /// <summary>
+        /// Opens the terminal window.
+        /// </summary>
+        private void OpenTerminal(object sender, EventArgs e)
+        {
+            try
+            {
+                // Initialize and show the terminal window via TerminalService
+                _terminalService.Initialize();
+                _logger.LogInformation("Terminal window opened via tray icon.");
+                _terminalService.LogAsync("Terminal window opened via tray icon.", LogLevel.Information).Wait();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error opening terminal window via tray icon.");
+                System.Windows.MessageBox.Show("Failed to open terminal window. Please check the logs for more details.", "Terminal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _terminalService.LogAsync($"Error opening terminal window: {ex.Message}", LogLevel.Error).Wait();
+            }
+        }
+
+        /// <summary>
+        /// Exits the application gracefully.
+        /// </summary>
+        private void ExitApplication(object sender, EventArgs e)
+        {
+            try
+            {
+                _trayIcon.Visible = false;
+                _trayIcon.Dispose();
+                System.Windows.Application.Current.Shutdown();
+                _logger.LogInformation("Application exited via tray icon.");
+                _terminalService.LogAsync("Application exited via tray icon.", LogLevel.Information).Wait();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error exiting application via tray icon.");
+                _terminalService.LogAsync($"Error exiting application: {ex.Message}", LogLevel.Error).Wait();
+            }
+        }
+
+        /// <summary>
+        /// Ensures that the tray icon is disposed when the main window is closed.
+        /// </summary>
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            if (_trayIcon != null)
+            {
+                _trayIcon.Visible = false;
+                _trayIcon.Dispose();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Wrapper class exposing script execution functionalities to JavaScript.
+    /// </summary>
+    [System.Runtime.InteropServices.ComVisible(true)]
+    [System.Runtime.InteropServices.ClassInterface(System.Runtime.InteropServices.ClassInterfaceType.None)]
+    public class ScriptExecutorJs
+    {
+        private readonly ToolbarService _toolbarService;
+        private readonly ILogger _logger;
+
+        public ScriptExecutorJs(ToolbarService toolbarService, ILogger logger)
+        {
+            _toolbarService = toolbarService;
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Executes a script asynchronously.
+        /// </summary>
+        /// <param name="scriptType">Type of the script: "PowerShell", "Cmd", "Python".</param>
+        /// <param name="command">The script command or path.</param>
+        /// <param name="adminRights">Whether to execute with admin rights.</param>
+        /// <returns>The output of the script execution.</returns>
+        public async Task<string> ExecuteScriptAsync(string scriptType, string command, bool adminRights)
+        {
+            try
+            {
+                // Implement script execution logic here
+                // For example, invoke the ScriptExecutor service
+                var scriptExecutor = _toolbarService.GetService<ScriptExecutor>();
+                string result = await scriptExecutor.ExecuteScriptAsync(scriptType, command, adminRights);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error executing script from frontend.");
+                return $"Error executing script: {ex.Message}";
+            }
+        }
+    }
+
+    /// <summary>
+    /// Wrapper class exposing system operations to JavaScript.
+    /// </summary>
+    [System.Runtime.InteropServices.ComVisible(true)]
+    [System.Runtime.InteropServices.ClassInterface(System.Runtime.InteropServices.ClassInterfaceType.None)]
+    public class SystemServiceJs
+    {
+        private readonly ToolbarService _toolbarService;
+        private readonly ILogger _logger;
+
+        public SystemServiceJs(ToolbarService toolbarService, ILogger logger)
+        {
+            _toolbarService = toolbarService;
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Executes an external application asynchronously.
+        /// </summary>
+        /// <param name="path">Path to the executable.</param>
+        /// <param name="arguments">Arguments for the executable.</param>
+        /// <param name="adminRights">Whether to run with admin rights.</param>
+        /// <returns>A message indicating the execution status.</returns>
+        public async Task<string> ExecuteApplicationAsync(string path, string arguments, bool adminRights)
+        {
+            try
+            {
+                // Implement application execution logic here
+                var systemService = _toolbarService.GetService<SystemService>();
+                await systemService.ExecuteApplicationAsync(path, arguments, adminRights);
+                return $"Launched application: {Path.GetFileName(path)}";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error executing application from frontend.");
+                return $"Error executing application: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Opens a URL in the default web browser.
+        /// </summary>
+        /// <param name="url">The URL to open.</param>
+        /// <returns>A message indicating the result of the operation.</returns>
+        public async Task<string> OpenUrlAsync(string url)
+        {
+            try
+            {
+                var systemService = _toolbarService.GetService<SystemService>();
+                systemService.OpenUrl(url);
+                return $"Opened URL: {url}";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error opening URL from frontend.");
+                return $"Error opening URL: {ex.Message}";
+            }
+        }
+    }
+
+    /// <summary>
+    /// Wrapper class exposing plugin functionalities to JavaScript.
+    /// </summary>
+    [System.Runtime.InteropServices.ComVisible(true)]
+    [System.Runtime.InteropServices.ClassInterface(System.Runtime.InteropServices.ClassInterfaceType.None)]
+    public class PluginServiceJs
+    {
+        private readonly ToolbarService _toolbarService;
+        private readonly ILogger _logger;
+
+        public PluginServiceJs(ToolbarService toolbarService, ILogger logger)
+        {
+            _toolbarService = toolbarService;
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Executes a plugin asynchronously.
+        /// </summary>
+        /// <param name="pluginId">The ID of the plugin to execute.</param>
+        /// <returns>The result of the plugin execution.</returns>
+        public async Task<string> ExecutePluginAsync(string pluginId)
+        {
+            try
+            {
+                // Implement plugin execution logic here
+                var pluginService = _toolbarService.GetService<PluginService>();
+                string result = await pluginService.ExecutePluginAsync(pluginId);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error executing plugin from frontend.");
+                return $"Error executing plugin: {ex.Message}";
+            }
+        }
+    }
+}
+
+==================================================
+*** MainWindow.xaml.cs *** | END
+==================================================
+==================================================
+*** SettingsWindow.xaml *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Views\SettingsWindow.xaml
+==================================================
+<Window x:Class="ToolbarApp.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings" Height="600" Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Header -->
+            <RowDefinition Height="*"/>    <!-- Content -->
+            <RowDefinition Height="Auto"/> <!-- Buttons -->
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="Application Settings" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+
+        <TabControl Grid.Row="1">
+            <!-- General Settings Tab -->
+            <TabItem Header="General">
+                <StackPanel Margin="10">
+                    <CheckBox x:Name="chkAlwaysOnTop" Content="Always on Top" Margin="0,0,0,10"/>
+                    <CheckBox x:Name="chkAlerts" Content="Enable Alerts" Margin="0,0,0,10"/>
+                    <!-- Add more general settings as needed -->
+                </StackPanel>
+            </TabItem>
+
+            <!-- Themes Tab -->
+            <TabItem Header="Themes">
+                <StackPanel Margin="10">
+                    <Label Content="Select Theme:"/>
+                    <ComboBox x:Name="cmbThemes" Margin="0,5,0,10"/>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Toolbars Settings Tab -->
+            <TabItem Header="Toolbars">
+                <StackPanel Margin="10">
+                    <ListBox x:Name="lstToolbars" DisplayMemberPath="ToolbarId" SelectionMode="Single" Height="200"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                        <Button Content="Add Toolbar" Width="100" Margin="5" Click="BtnAddToolbar_Click"/>
+                        <Button Content="Remove Toolbar" Width="100" Margin="5" Click="BtnRemoveToolbar_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Save" Width="75" Margin="5" Click="BtnSave_Click"/>
+            <Button Content="Cancel" Width="75" Margin="5" Click="BtnCancel_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
+
+==================================================
+*** SettingsWindow.xaml *** | END
+==================================================
+==================================================
+*** SettingsWindow.xaml.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Views\SettingsWindow.xaml.cs
+==================================================
+using System;
+using System.Windows;
+using ToolbarApp.Services;
+using ToolbarApp.Models;
+using Microsoft.Extensions.Logging;
+using System.Linq;
+using System.Collections.Generic;
+
+namespace ToolbarApp.Views
+{
+    public partial class SettingsWindow : Window
+    {
+        private readonly ConfigurationService _configService;
+        private readonly LoggingService _loggingService;
+        private readonly List<ToolbarWindow> _toolbarWindows;
+
+        public SettingsWindow(ConfigurationService configService, LoggingService loggingService, List<ToolbarWindow> toolbarWindows)
+        {
+            InitializeComponent();
+            _configService = configService;
+            _loggingService = loggingService;
+            _toolbarWindows = toolbarWindows;
+            LoadSettings();
+            LoadThemes();
+            LoadToolbars();
+        }
+
+        private async void LoadSettings()
+        {
+            var settings = await _configService.LoadConfigurationAsync();
+            chkAlwaysOnTop.IsChecked = settings.IsAlwaysOnTop;
+            chkAlerts.IsChecked = settings.AreAlertsEnabled;
+        }
+
+        private void LoadThemes()
+        {
+            // Assuming themes are stored under app/themes/themename/styles.css
+            string themesPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app", "themes");
+            if (System.IO.Directory.Exists(themesPath))
+            {
+                var themes = System.IO.Directory.GetDirectories(themesPath)
+                                .Select(dir => System.IO.Path.GetFileName(dir))
+                                .ToList();
+                cmbThemes.ItemsSource = themes;
+                cmbThemes.SelectedItem = "default"; // Default theme
+            }
+        }
+
+        private async void LoadToolbars()
+        {
+            var settings = await _configService.LoadConfigurationAsync();
+            lstToolbars.ItemsSource = settings.Toolbars;
+        }
+
+        private async void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
+            var settings = await _configService.LoadConfigurationAsync();
+            settings.IsAlwaysOnTop = chkAlwaysOnTop.IsChecked ?? false;
+            settings.AreAlertsEnabled = chkAlerts.IsChecked ?? true;
+
+            // Apply global theme if needed
+            if (cmbThemes.SelectedItem != null)
+            {
+                settings.SelectedTheme = cmbThemes.SelectedItem.ToString();
+                // Apply theme to all toolbars
+                foreach (var toolbar in _toolbarWindows)
+                {
+                    toolbar.ChangeTheme(settings.SelectedTheme);
+                }
+            }
+
+            await _configService.SaveConfigurationAsync(settings);
+            _loggingService.Log("Application settings saved successfully.");
+            this.DialogResult = true;
+            this.Close();
+        }
+
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
+            this.Close();
+        }
+
+        private async void BtnAddToolbar_Click(object sender, RoutedEventArgs e)
+        {
+            var settings = await _configService.LoadConfigurationAsync();
+            if (settings.Toolbars.Count >= 3)
+            {
+                System.Windows.MessageBox.Show("Maximum of 3 toolbars allowed.", "Limit Reached", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var newToolbar = new ToolbarConfig
+            {
+                ToolbarId = $"toolbar{settings.Toolbars.Count + 1}",
+                Position = "Top",
+                IsPinned = false,
+                Theme = "default",
+                Buttons = new List<ButtonConfig>()
+            };
+
+            // Add sample buttons
+            newToolbar.Buttons.AddRange(GetSampleButtons());
+
+            settings.Toolbars.Add(newToolbar);
+            await _configService.SaveConfigurationAsync(settings);
+            LoadToolbars();
+
+            // Create new toolbar window
+            var newToolbarWindow = new ToolbarWindow(newToolbar, _configService, /* Inject other services as needed */ null, null, _loggingService, null);
+            newToolbarWindow.Owner = this.Owner;
+            newToolbarWindow.Show();
+            _toolbarWindows.Add(newToolbarWindow);
+
+            _loggingService.Log($"Added new toolbar '{newToolbar.ToolbarId}'.");
+        }
+
+        private async void BtnRemoveToolbar_Click(object sender, RoutedEventArgs e)
+        {
+            if (lstToolbars.SelectedItem is ToolbarConfig selectedToolbar)
+            {
+                var result = System.Windows.MessageBox.Show($"Are you sure you want to remove toolbar '{selectedToolbar.ToolbarId}'?", "Confirm Removal", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    var settings = await _configService.LoadConfigurationAsync();
+                    settings.Toolbars.Remove(selectedToolbar);
+                    await _configService.SaveConfigurationAsync(settings);
+                    LoadToolbars();
+
+                    // Close and remove the toolbar window
+                    var toolbarWindow = _toolbarWindows.FirstOrDefault(t => t.Config.ToolbarId == selectedToolbar.ToolbarId);
+                    if (toolbarWindow != null)
+                    {
+                        toolbarWindow.Close();
+                        _toolbarWindows.Remove(toolbarWindow);
+                    }
+
+                    _loggingService.Log($"Removed toolbar '{selectedToolbar.ToolbarId}'.");
+                }
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Please select a toolbar to remove.", "No Selection", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private List<ButtonConfig> GetSampleButtons()
+        {
+            return new List<ButtonConfig>
+            {
+                new ButtonConfig
+                {
+                    Label = "PowerShell Test",
+                    Type = "script",
+                    Config = new Dictionary<string, object>
+                    {
+                        { "scriptType", "PowerShell" },
+                        { "command", "Get-Process | Select-Object -First 5" },
+                        { "adminRights", false }
+                    }
+                },
+                new ButtonConfig
+                {
+                    Label = "Open Notepad",
+                    Type = "application",
+                    Config = new Dictionary<string, object>
+                    {
+                        { "path", "notepad.exe" },
+                        { "arguments", "" },
+                        { "adminRights", false }
+                    }
+                },
+                new ButtonConfig
+                {
+                    Label = "Google",
+                    Type = "url",
+                    Config = new Dictionary<string, object>
+                    {
+                        { "url", "https://www.google.com" }
+                    }
+                }
+            };
+        }
+    }
+}
+
+==================================================
+*** SettingsWindow.xaml.cs *** | END
+==================================================
+==================================================
+*** TerminalWindow.xaml *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Views\TerminalWindow.xaml
+==================================================
+<!-- Views/TerminalWindow.xaml -->
+<Window x:Class="ToolBarApp.Views.TerminalWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Terminal" Height="400" Width="600">
+    <Grid>
+        <wv2:WebView2 x:Name="webView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+    </Grid>
+</Window>
+
+==================================================
+*** TerminalWindow.xaml *** | END
+==================================================
+==================================================
+*** TerminalWindow.xaml.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Views\TerminalWindow.xaml.cs
+==================================================
+// Views/TerminalWindow.xaml.cs
+using System;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows;
+using Microsoft.Web.WebView2.Core;
+
+namespace ToolBarApp.Views
+{
+    /// <summary>
+    /// Interaction logic for TerminalWindow.xaml
+    /// </summary>
+    public partial class TerminalWindow : Window
+    {
+        public TerminalWindow()
+        {
+            InitializeComponent();
+            InitializeAsync();
+        }
+
+        /// <summary>
+        /// Initializes WebView2 and loads the terminal HTML.
+        /// </summary>
+        private async void InitializeAsync()
+        {
+            await webView.EnsureCoreWebView2Async(null);
+
+            // Load the terminal HTML content
+            string htmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot", "terminal.html");
+            if (File.Exists(htmlPath))
+            {
+                webView.CoreWebView2.Navigate(new Uri(htmlPath).AbsoluteUri);
+            }
+            else
+            {
+                // Handle missing terminal.html
+                MessageBox.Show("terminal.html not found. Please ensure it exists in the wwwroot folder.", "File Not Found", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Appends a message to the terminal.
+        /// </summary>
+        /// <param name="message">The message to append.</param>
+        /// <param name="level">The log level.</param>
+        public async Task AppendMessageAsync(string message, LogLevel level)
+        {
+            // You can style messages based on log level if desired
+            string script = $"appendMessage('{EscapeForJavaScript(message)}', '{level.ToString()}');";
+            await webView.ExecuteScriptAsync(script);
+        }
+
+        /// <summary>
+        /// Escapes special characters for safe JavaScript insertion.
+        /// </summary>
+        /// <param name="input">The input string.</param>
+        /// <returns>Escaped string.</returns>
+        private string EscapeForJavaScript(string input)
+        {
+            return input.Replace("\\", "\\\\").Replace("'", "\\'").Replace("\n", "\\n").Replace("\r", "");
+        }
+    }
+}
+
+==================================================
+*** TerminalWindow.xaml.cs *** | END
+==================================================
+==================================================
+*** ToolbarInstance.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Views\ToolbarInstance.cs
+==================================================
+// ToolbarInstance class to manage multiple toolbars
+public class ToolbarInstance
+{
+    private readonly MainWindow _mainWindow;
+    private readonly ConfigurationService _configService;
+    private readonly LoggingService _loggingService;
+    private readonly PluginService _pluginService;
+
+    private Window _toolbarWindow;
+    private bool _isVisible = true;
+
+    public ToolbarInstance(MainWindow mainWindow, ConfigurationService configService, LoggingService loggingService, PluginService pluginService)
+    {
+        _mainWindow = mainWindow;
+        _configService = configService;
+        _loggingService = loggingService;
+        _pluginService = pluginService;
+
+        InitializeToolbarWindow();
+    }
+
+    private void InitializeToolbarWindow()
+    {
+        _toolbarWindow = new ToolbarWindow(_configService, _loggingService, _pluginService)
+        {
+            Owner = _mainWindow,
+            WindowStartupLocation = WindowStartupLocation.Manual
+        };
+        // Load toolbar position from settings
+        var settingsTask = _configService.LoadConfigurationAsync();
+        settingsTask.Wait();
+        var settings = settingsTask.Result;
+        // Set initial position (could be enhanced to have individual positions per toolbar)
+        _toolbarWindow.Left = 0;
+        _toolbarWindow.Top = 0;
+        _toolbarWindow.Show();
+    }
+
+    public void ToggleVisibility()
+    {
+        if (_isVisible)
+        {
+            _toolbarWindow.Hide();
+            _isVisible = false;
+        }
+        else
+        {
+            _toolbarWindow.Show();
+            _isVisible = true;
+        }
+    }
+
+    public void ShowOrHide()
+    {
+        ToggleVisibility();
+    }
+}
+==================================================
+*** ToolbarInstance.cs *** | END
+==================================================
+==================================================
+*** ToolbarWindow.xaml *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Views\ToolbarWindow.xaml
+==================================================
+<Window x:Class="ToolbarApp.Views.ToolbarWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        Title="Toolbar" Height="100" Width="800"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ResizeMode="NoResize">
+    <Border Background="#1E1E1E" CornerRadius="10" BorderBrush="#CCCCCC" BorderThickness="1" Opacity="0.9">
+        <wv2:WebView2 x:Name="webView" />
+    </Border>
+</Window>
+
+==================================================
+*** ToolbarWindow.xaml *** | END
+==================================================
+==================================================
+*** ToolbarWindow.xaml.cs *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\Views\ToolbarWindow.xaml.cs
+==================================================
+using System;
+using System.Windows;
+using Microsoft.Web.WebView2.Core;
+using ToolbarApp.Services;
+using ToolbarApp.Models;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace ToolbarApp.Views
+{
+    public partial class ToolbarWindow : Window
+    {
+        private readonly ConfigurationService _configService;
+        private readonly LoggingService _loggingService;
+        private readonly PluginService _pluginService;
+
+        public ToolbarWindow(ConfigurationService configService, LoggingService loggingService, PluginService pluginService)
+        {
+            InitializeComponent();
+            _configService = configService;
+            _loggingService = loggingService;
+            _pluginService = pluginService;
+
+            InitializeWebView();
+        }
+
+        private async void InitializeWebView()
+        {
+            try
+            {
+                await webView.EnsureCoreWebView2Async(null);
+                webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                webView.CoreWebView2.Settings.AreDevToolsEnabled = false;
+
+                // Expose backend services to JavaScript
+                webView.CoreWebView2.AddHostObjectToScript("scriptExecutor", new ScriptExecutorJs(new ScriptExecutor(_loggingService), _loggingService));
+                webView.CoreWebView2.AddHostObjectToScript("systemService", new SystemServiceJs(new SystemService(_loggingService), _loggingService));
+                webView.CoreWebView2.AddHostObjectToScript("pluginService", new PluginServiceJs(_pluginService, _loggingService));
+
+                webView.CoreWebView2.WebMessageReceived += WebView_WebMessageReceived;
+
+                LoadHtmlContent();
+                await LoadToolbarConfigurationAsync();
+
+                _loggingService.Log("Toolbar WebView initialized successfully.");
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError("Error initializing Toolbar WebView.", ex);
+                MessageBox.Show("Error initializing Toolbar WebView. Please check the log file for details.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void LoadHtmlContent()
+        {
+            // Load the HTML content into WebView2. Ensure that the HTML, CSS, and JS files are correctly placed in wwwroot.
+            string htmlContent = @"
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Toolbar</title>
+    <link rel='stylesheet' href='styles.css'>
+</head>
+<body>
+    <div id='toolbar' class='toolbar'></div>
+    <div id='terminal' class='terminal'></div>
+    <script src='main.js'></script>
+    <script src='Toolbar.js'></script>
+</body>
+</html>";
+            webView.CoreWebView2.NavigateToString(htmlContent);
+        }
+
+        private async Task LoadToolbarConfigurationAsync()
+        {
+            try
+            {
+                var config = await _configService.LoadConfigurationAsync();
+                if (config.Buttons == null || config.Buttons.Count == 0)
+                {
+                    AddSampleButtons();
+                }
+                else
+                {
+                    foreach (var button in config.Buttons)
+                    {
+                        await AddButtonToToolbarAsync(button);
+                    }
+                }
+                _loggingService.Log("Toolbar configuration loaded successfully.");
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError("Error loading toolbar configuration.", ex);
+                MessageBox.Show("Error loading toolbar configuration. Please check the log file for details.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task AddButtonToToolbarAsync(ButtonConfig button)
+        {
+            try
+            {
+                string json = JsonSerializer.Serialize(button);
+                await webView.CoreWebView2.ExecuteScriptAsync($"toolbar.addButton({json});");
+                _loggingService.Log($"Button added to toolbar: {button.Label}");
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError($"Error adding button to toolbar: {button.Label}", ex);
+                throw;
+            }
+        }
+
+        private void AddSampleButtons()
+        {
+            try
+            {
+                var sampleButtons = new List<ButtonConfig>
+                {
+                    new ButtonConfig
+                    {
+                        Label = "PowerShell Test",
+                        Type = "script",
+                        Config = new Dictionary<string, object>
+                        {
+                            { "scriptType", "PowerShell" },
+                            { "command", "Get-Process | Select-Object -First 5" },
+                            { "adminRights", false }
+                        }
+                    },
+                    new ButtonConfig
+                    {
+                        Label = "Open Notepad",
+                        Type = "application",
+                        Config = new Dictionary<string, object>
+                        {
+                            { "path", "notepad.exe" },
+                            { "arguments", "" },
+                            { "adminRights", false }
+                        }
+                    },
+                    new ButtonConfig
+                    {
+                        Label = "Google",
+                        Type = "url",
+                        Config = new Dictionary<string, object>
+                        {
+                            { "url", "https://www.google.com" }
+                        }
+                    }
+                };
+
+                var settingsTask = _configService.LoadConfigurationAsync();
+                settingsTask.Wait();
+                var settings = settingsTask.Result;
+                settings.ToolbarConfig.Buttons.AddRange(sampleButtons);
+                _configService.SaveConfigurationAsync(settings).Wait();
+
+                foreach (var button in sampleButtons)
+                {
+                    AddButtonToToolbarAsync(button).Wait();
+                }
+                _loggingService.Log("Sample buttons added successfully.");
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError("Error adding sample buttons.", ex);
+                MessageBox.Show("Error adding sample buttons. Please check the log file for details.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void WebView_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
+        {
+            try
+            {
+                var message = JsonSerializer.Deserialize<Dictionary<string, object>>(e.WebMessageAsJson);
+                string type = message["type"].ToString();
+
+                switch (type)
+                {
+                    case "saveButtonOrder":
+                        var order = JsonSerializer.Deserialize<List<string>>(message["order"].ToString());
+                        await SaveButtonOrderAsync(order);
+                        break;
+                    case "openConfigDialog":
+                        var buttonJson = message["button"].ToString();
+                        var button = JsonSerializer.Deserialize<ButtonConfig>(buttonJson);
+                        OpenConfigDialog(button);
+                        break;
+                    case "openSettings":
+                        OpenSettingsDialog();
+                        break;
+                    default:
+                        _loggingService.Log($"Unknown message type received: {type}", LogLevel.Warning);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError("Error processing WebView message.", ex);
+            }
+        }
+
+        private async Task SaveButtonOrderAsync(List<string> order)
+        {
+            try
+            {
+                var settings = await _configService.LoadConfigurationAsync();
+                var orderedButtons = order.Select(id => settings.ToolbarConfig.Buttons.FirstOrDefault(b => b.Id == id)).Where(b => b != null).ToList();
+                settings.ToolbarConfig.Buttons = orderedButtons;
+                await _configService.SaveConfigurationAsync(settings);
+                _loggingService.Log("Button order saved successfully.");
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError("Error saving button order.", ex);
+                MessageBox.Show("Error saving button order. Please check the log file for details.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OpenConfigDialog(ButtonConfig button)
+        {
+            try
+            {
+                var configWindow = new ButtonConfigWindow(button);
+                configWindow.Owner = this;
+                if (configWindow.ShowDialog() == true)
+                {
+                    // Update the button configuration in the toolbar
+                    string json = JsonSerializer.Serialize(button);
+                    webView.CoreWebView2.ExecuteScriptAsync($"toolbar.updateButton({json});").Wait();
+
+                    // Save the updated configuration
+                    var settingsTask = _configService.LoadConfigurationAsync();
+                    settingsTask.Wait();
+                    var settings = settingsTask.Result;
+                    var index = settings.ToolbarConfig.Buttons.FindIndex(b => b.Id == button.Id);
+                    if (index != -1)
+                    {
+                        settings.ToolbarConfig.Buttons[index] = button;
+                        _configService.SaveConfigurationAsync(settings).Wait();
+                    }
+                    _loggingService.Log($"Button configuration updated: {button.Label}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError($"Error updating button configuration: {button.Label}", ex);
+                MessageBox.Show("Error updating button configuration. Please check the log file for details.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public void ToggleToolbarVisibility()
+        {
+            this.Visibility = this.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            _loggingService.Log($"Toolbar visibility toggled to: {this.Visibility}");
+        }
+    }
+}
+
+==================================================
+*** ToolbarWindow.xaml.cs *** | END
+==================================================
+==================================================
+*** index.html *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\wwwroot\index.html
+==================================================
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Professional Toolbar</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="buttonstyles.css">
+</head>
+<body>
+    <div id="toolbar" class="toolbar"></div>
+    <script src="toolbar.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
+
+==================================================
+*** index.html *** | END
+==================================================
+==================================================
+*** terminal.html *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\wwwroot\terminal.html
+==================================================
+<!-- wwwroot/terminal.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Terminal</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            font-family: Consolas, monospace;
+            font-size: 14px;
+        }
+        #terminal {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .info {
+            color: #00ff00;
+        }
+        .error {
+            color: #ff0000;
+        }
+        .warning {
+            color: #ffff00;
+        }
+        .debug {
+            color: #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal"></div>
+
+    <script>
+        function appendMessage(message, level) {
+            const terminal = document.getElementById('terminal');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            messageElement.className = level.toLowerCase();
+            terminal.appendChild(messageElement);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+    </script>
+</body>
+</html>
+
+==================================================
+*** terminal.html *** | END
+==================================================
+==================================================
+*** main.js *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\wwwroot\js\main.js
+==================================================
+// wwwroot/js/main.js
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Toolbar initialization is handled in toolbar.js
+    // This file can be used for additional initializations if needed
+    console.log("Main.js loaded successfully.");
+});
+==================================================
+*** main.js *** | END
+==================================================
+==================================================
+*** toolbar.js *** | START
+Path: C:\Users\Shadow\Desktop\projects\ToolBarApp\wwwroot\js\toolbar.js
+==================================================
+// wwwroot/js/toolbar.js
+
+class Toolbar {
+    constructor(toolbarElementId) {
+        this.buttons = [];
+        this.toolbarElement = document.getElementById(toolbarElementId);
+        this.initDragAndDrop();
+        this.initMessageHandler();
+    }
+
+    /**
+     * Adds a button configuration to the toolbar and renders it.
+     * @param {Object} button - The button configuration object.
+     */
+    addButton(button) {
+        this.buttons.push(button);
+        this.renderButton(button);
+    }
+
+    /**
+     * Renders a single button based on its configuration.
+     * @param {Object} button - The button configuration object.
+     */
+    renderButton(button) {
+        const buttonElement = document.createElement('button');
+        buttonElement.className = 'toolbar-button';
+        buttonElement.textContent = button.label;
+        buttonElement.onclick = () => this.executeButton(button);
+        buttonElement.ondblclick = () => this.openConfigDialog(button);
+        buttonElement.draggable = true;
+        buttonElement.dataset.id = button.id;
+
+        // Optional: Add tooltip
+        if (button.tooltip) {
+            const tooltip = document.createElement('span');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = button.tooltip;
+            buttonElement.appendChild(tooltip);
+        }
+
+        this.toolbarElement.appendChild(buttonElement);
+    }
+
+    /**
+     * Opens the configuration dialog for a specific button.
+     * @param {Object} button - The button configuration object.
+     */
+    openConfigDialog(button) {
+        window.chrome.webview.postMessage({ type: 'openConfigDialog', button: button });
+    }
+
+    /**
+     * Initializes drag-and-drop functionality for reordering buttons.
+     */
+    initDragAndDrop() {
+        this.toolbarElement.addEventListener('dragstart', this.dragStart.bind(this));
+        this.toolbarElement.addEventListener('dragover', this.dragOver.bind(this));
+        this.toolbarElement.addEventListener('drop', this.drop.bind(this));
+    }
+
+    /**
+     * Handles the dragstart event.
+     * @param {DragEvent} e - The drag event.
+     */
+    dragStart(e) {
+        if (e.target.classList.contains('toolbar-button')) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.id);
+            e.dataTransfer.effectAllowed = 'move';
+        }
+    }
+
+    /**
+     * Handles the dragover event.
+     * @param {DragEvent} e - The drag event.
+     */
+    dragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    }
+
+    /**
+     * Handles the drop event to reorder buttons.
+     * @param {DragEvent} e - The drag event.
+     */
+    drop(e) {
+        e.preventDefault();
+        const draggedButtonId = e.dataTransfer.getData('text');
+        const targetButton = e.target.closest('button.toolbar-button');
+        if (!targetButton) return;
+
+        const draggedButtonElement = this.toolbarElement.querySelector(`[data-id='${draggedButtonId}']`);
+        if (draggedButtonElement && draggedButtonElement !== targetButton) {
+            const allButtons = Array.from(this.toolbarElement.children);
+            const fromIndex = allButtons.indexOf(draggedButtonElement);
+            const toIndex = allButtons.indexOf(targetButton);
+
+            if (fromIndex < toIndex) {
+                this.toolbarElement.insertBefore(draggedButtonElement, targetButton.nextSibling);
+            } else {
+                this.toolbarElement.insertBefore(draggedButtonElement, targetButton);
+            }
+
+            // Update the buttons array to reflect the new order
+            const [reorderedButton] = this.buttons.splice(fromIndex, 1);
+            this.buttons.splice(toIndex, 0, reorderedButton);
+
+            // Save the new order
+            this.saveButtonOrder();
+        }
+    }
+
+    /**
+     * Saves the current order of buttons by sending a message to the backend.
+     */
+    saveButtonOrder() {
+        const buttonOrder = this.buttons.map(button => button.id);
+        window.chrome.webview.postMessage({ type: 'saveButtonOrder', order: buttonOrder });
+    }
+
+    /**
+     * Executes the action associated with a button.
+     * @param {Object} button - The button configuration object.
+     */
+    async executeButton(button) {
+        try {
+            let response = '';
+            switch (button.type) {
+                case 'script':
+                    response = await window.chrome.webview.hostObjects.scriptExecutor.ExecuteScriptAsync(
+                        button.config.scriptType,
+                        button.config.command,
+                        button.config.adminRights
+                    );
+                    this.appendToTerminal(`Executed ${button.label}:\n${response}`, 'info');
+                    break;
+                case 'application':
+                    response = await window.chrome.webview.hostObjects.systemService.ExecuteApplicationAsync(
+                        button.config.path,
+                        button.config.arguments,
+                        button.config.adminRights
+                    );
+                    this.appendToTerminal(`Launched ${button.label}`, 'info');
+                    break;
+                case 'url':
+                    await window.chrome.webview.hostObjects.systemService.OpenUrlAsync(button.config.url);
+                    this.appendToTerminal(`Opened URL: ${button.config.url}`, 'info');
+                    break;
+                case 'plugin':
+                    response = await window.chrome.webview.hostObjects.pluginService.ExecutePluginAsync(button.id);
+                    this.appendToTerminal(`Executed Plugin ${button.label}:\n${response}`, 'info');
+                    break;
+                default:
+                    this.appendToTerminal(`Unknown button type: ${button.type}`, 'warning');
+            }
+        } catch (error) {
+            this.appendToTerminal(`Error executing ${button.label}:\n${error}`, 'error');
+        }
+    }
+
+    /**
+     * Appends messages to the terminal window (if embedded) or logs them.
+     * For this implementation, it's handled by TerminalService.
+     * This function can be customized as needed.
+     */
+    appendToTerminal(message, level = 'info') {
+        // Placeholder for additional frontend terminal logging if needed
+        console.log(`[${level.toUpperCase()}] ${message}`);
+    }
+
+    /**
+     * Initializes the message handler to receive messages from the backend.
+     */
+    initMessageHandler() {
+        window.chrome.webview.addEventListener('message', event => {
+            const data = JSON.parse(event.data);
+            switch (data.type) {
+                case 'buttonOrderSaved':
+                    this.appendToTerminal('Button order saved successfully.', 'info');
+                    break;
+                case 'buttonConfigUpdated':
+                    this.appendToTerminal('Button configuration updated.', 'info');
+                    break;
+                    // Handle other message types as needed
+                default:
+                    console.warn(`Unknown message type received: ${data.type}`);
+                    break;
+            }
+        });
+    }
+
+    /**
+     * Updates a button's configuration in the toolbar.
+     * @param {Object} updatedButton - The updated button configuration object.
+     */
+    updateButton(updatedButton) {
+        const buttonIndex = this.buttons.findIndex(btn => btn.id === updatedButton.id);
+        if (buttonIndex !== -1) {
+            this.buttons[buttonIndex] = updatedButton;
+            const existingButtonElement = this.toolbarElement.querySelector(`[data-id='${updatedButton.id}']`);
+            if (existingButtonElement) {
+                existingButtonElement.textContent = updatedButton.label;
+                existingButtonElement.onclick = () => this.executeButton(updatedButton);
+                existingButtonElement.ondblclick = () => this.openConfigDialog(updatedButton);
+                // Update tooltip if exists
+                if (updatedButton.tooltip) {
+                    let tooltip = existingButtonElement.querySelector('.tooltip');
+                    if (!tooltip) {
+                        tooltip = document.createElement('span');
+                        tooltip.className = 'tooltip';
+                        existingButtonElement.appendChild(tooltip);
+                    }
+                    tooltip.textContent = updatedButton.tooltip;
+                }
+            }
+            this.appendToTerminal(`Button '${updatedButton.label}' updated successfully.`, 'info');
+        }
+    }
+
+    /**
+     * Removes a button from the toolbar.
+     * @param {string} buttonId - The ID of the button to remove.
+     */
+    removeButton(buttonId) {
+        const buttonIndex = this.buttons.findIndex(btn => btn.id === buttonId);
+        if (buttonIndex !== -1) {
+            this.buttons.splice(buttonIndex, 1);
+            const buttonElement = this.toolbarElement.querySelector(`[data-id='${buttonId}']`);
+            if (buttonElement) {
+                this.toolbarElement.removeChild(buttonElement);
+                this.appendToTerminal(`Button with ID '${buttonId}' removed successfully.`, 'info');
+            }
+        }
+    }
+}
+
+// Initialize the toolbar when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    const toolbar = new Toolbar('toolbar');
+    toolbar.initMessageHandler();
+
+    // Toolbar buttons are loaded and rendered from the backend via LoadAndRenderToolbarAsync in MainWindow.xaml.cs
+});
+==================================================
+*** toolbar.js *** | END
+==================================================

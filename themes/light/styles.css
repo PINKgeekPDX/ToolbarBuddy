@@ -1,0 +1,21 @@
+/* Light Theme */
+body {
+    background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+}
+.toolbar {
+    background: rgba(255, 255, 255, 0.9);
+}
+.button {
+    background: rgba(0, 0, 0, 0.1);
+    color: #000000;
+}
+.button:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+.button.active {
+    background: rgba(0, 122, 204, 0.6);
+    border-color: rgba(0, 122, 204, 0.8);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 122, 204, 0.6);
+}
+/* Add more styles as needed */

@@ -1,0 +1,50 @@
+<Window x:Class="ToolbarApp.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings" Height="600" Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Header -->
+            <RowDefinition Height="*"/>    <!-- Content -->
+            <RowDefinition Height="Auto"/> <!-- Buttons -->
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="Application Settings" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+
+        <TabControl Grid.Row="1">
+            <!-- General Settings Tab -->
+            <TabItem Header="General">
+                <StackPanel Margin="10">
+                    <CheckBox x:Name="chkAlwaysOnTop" Content="Always on Top" Margin="0,0,0,10"/>
+                    <CheckBox x:Name="chkAlerts" Content="Enable Alerts" Margin="0,0,0,10"/>
+                    <!-- Add more general settings as needed -->
+                </StackPanel>
+            </TabItem>
+
+            <!-- Themes Tab -->
+            <TabItem Header="Themes">
+                <StackPanel Margin="10">
+                    <Label Content="Select Theme:"/>
+                    <ComboBox x:Name="cmbThemes" Margin="0,5,0,10"/>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Toolbars Settings Tab -->
+            <TabItem Header="Toolbars">
+                <StackPanel Margin="10">
+                    <ListBox x:Name="lstToolbars" DisplayMemberPath="ToolbarId" SelectionMode="Single" Height="200"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                        <Button Content="Add Toolbar" Width="100" Margin="5" Click="BtnAddToolbar_Click"/>
+                        <Button Content="Remove Toolbar" Width="100" Margin="5" Click="BtnRemoveToolbar_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Save" Width="75" Margin="5" Click="BtnSave_Click"/>
+            <Button Content="Cancel" Width="75" Margin="5" Click="BtnCancel_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

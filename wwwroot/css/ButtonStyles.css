@@ -1,0 +1,114 @@
+/* buttonstyles.css */
+
+
+/* Common Toolbar Button Styles */
+
+.toolbar button {
+    background-color: transparent;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+
+/* Hover Effect */
+
+.toolbar button:hover {
+    background-color: #3E3E3E;
+    color: #FFFFFF;
+}
+
+
+/* Active/Pressed State */
+
+.toolbar button:active {
+    background-color: #5A5A5A;
+}
+
+
+/* Disabled State */
+
+.toolbar button:disabled {
+    color: #A0A0A0;
+    cursor: not-allowed;
+}
+
+
+/* Control Buttons (e.g., Settings, Minimize) */
+
+.control-button {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* User-Added Buttons */
+
+.user-button {
+    width: 50px;
+    height: 30px;
+}
+
+
+/* Icon Styles within Buttons */
+
+.toolbar button .button-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    fill: currentColor;
+    /* Ensures icons inherit the text color */
+}
+
+
+/* Tooltip Styles */
+
+.toolbar button .tooltip {
+    visibility: hidden;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    /* Position above the button */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.toolbar button:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* Responsive Design */
+
+@media (max-width: 600px) {
+    .toolbar button {
+        padding: 8px 12px;
+        margin: 3px;
+        font-size: 12px;
+    }
+    .user-button {
+        width: 40px;
+    }
+    .control-button {
+        width: 25px;
+        height: 25px;
+    }
+}

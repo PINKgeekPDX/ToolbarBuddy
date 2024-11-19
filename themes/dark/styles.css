@@ -1,0 +1,21 @@
+/* Dark Theme */
+body {
+    background: linear-gradient(135deg, #121212, #1e1e1e);
+}
+.toolbar {
+    background: rgba(18, 18, 18, 0.9);
+}
+.button {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+.button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+.button.active {
+    background: rgba(0, 122, 204, 0.6);
+    border-color: rgba(0, 122, 204, 0.8);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 122, 204, 0.6);
+}
+/* Add more styles as needed */

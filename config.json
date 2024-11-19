@@ -1,0 +1,42 @@
+{
+    "Toolbars": [
+        {
+            "Position": "Top",
+            "IsPinned": true,
+            "IsAlwaysOnTop": false,
+            "Buttons": [
+                {
+                    "Id": "btn1",
+                    "Label": "Run Script",
+                    "Type": "script",
+                    "Config": {
+                        "scriptType": "PowerShell",
+                        "command": "Get-Process",
+                        "adminRights": false
+                    },
+                    "Tooltip": "Execute a PowerShell script"
+                },
+                {
+                    "Id": "btn2",
+                    "Label": "Open Notepad",
+                    "Type": "application",
+                    "Config": {
+                        "path": "notepad.exe",
+                        "arguments": "",
+                        "adminRights": false
+                    },
+                    "Tooltip": "Launch Notepad"
+                },
+                {
+                    "Id": "btn3",
+                    "Label": "Google",
+                    "Type": "url",
+                    "Config": {
+                        "url": "https://www.google.com"
+                    },
+                    "Tooltip": "Open Google in default browser"
+                }
+            ]
+        }
+    ]
+}

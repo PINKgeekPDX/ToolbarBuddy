@@ -1,0 +1,24 @@
+/* Flashy Theme */
+body {
+    background: linear-gradient(135deg, #f953c6, #b91d73);
+}
+.toolbar {
+    background: rgba(249, 83, 198, 0.9);
+}
+.button {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    transition: all 0.3s ease, transform 0.2s ease;
+}
+.button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+.button.active {
+    background: rgba(255, 20, 147, 0.6);
+    border-color: rgba(255, 20, 147, 0.8);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(255, 20, 147, 0.6);
+}
+/* Add more styles as needed */

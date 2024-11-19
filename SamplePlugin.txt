@@ -1,0 +1,32 @@
+using ToolbarApp.Models;
+using ToolbarApp.Plugins;
+using System.Collections.Generic;
+
+namespace SamplePlugin
+{
+    public class HelloWorldPlugin : IToolbarPlugin
+    {
+        public string Name => "Hello World Plugin";
+
+        public ButtonConfig GetButtonConfig()
+        {
+            return new ButtonConfig
+            {
+                Id = "plugin_helloworld",
+                Label = "Hello",
+                Type = "script",
+                Config = new Dictionary<string, object>
+                {
+                    { "scriptType", "cmd" },
+                    { "command", "echo Hello from Plugin" },
+                    { "adminRights", false }
+                }
+            };
+        }
+
+        public void OnButtonClick()
+        {
+            // Define what happens when the button is clicked
+        }
+    }
+}

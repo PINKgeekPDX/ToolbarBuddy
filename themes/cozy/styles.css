@@ -1,0 +1,21 @@
+/* Cozy Theme */
+body {
+    background: linear-gradient(135deg, #ffecd2, #fcb69f);
+}
+.toolbar {
+    background: rgba(255, 236, 210, 0.9);
+}
+.button {
+    background: rgba(255, 99, 71, 0.2);
+    color: #ffffff;
+}
+.button:hover {
+    background: rgba(255, 99, 71, 0.3);
+}
+.button.active {
+    background: rgba(255, 69, 0, 0.6);
+    border-color: rgba(255, 69, 0, 0.8);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(255, 69, 0, 0.6);
+}
+/* Add more styles as needed */
